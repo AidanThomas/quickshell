@@ -25,8 +25,28 @@ Item {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: {
-            popup.visible = !popup.visible
+
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+        onClicked: mouse => {
+            if (mouse.button === Qt.LeftButton) {
+                popup.visible = !popup.visible
+            } else if (mouse.button === Qt.RightButton) {
+                if (root.sink)
+                    root.sink.audio.muted = !root.sink.audio.muted
+            }
+        }
+
+        onWheel: wheel => {
+            if (!root.sink)
+                return
+
+            const step = 0.02
+            if (wheel.angleDelta.y > 0)  {
+                root.sink.audio.volume = Math.min(1, root.sink.audio.volume + step)
+            } else if (wheel.angleDelta.y < 0) {
+                root.sink.audio.volume = Math.max(0, root.sink.audio.volume - step)
+            }
         }
     }
 
