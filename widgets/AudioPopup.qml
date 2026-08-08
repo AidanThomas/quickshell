@@ -169,29 +169,20 @@ PopupWindow {
                 }
 
                 // Output devices
-                ComboBox {
+                AudioDeviceSelect {
                     id: outputDeviceSelect
 
-                    Layout.fillWidth: true
-                    implicitHeight: 30
-                    model: Pipewire.nodes.values.filter(node =>
+                    selectedNode: popup.sink
+                    deviceModel: Pipewire.nodes.values.filter(node =>
                         node.audio !== null && node.isSink && !node.isStream
-                        ).map(node => ({
-                            text: node.description.length > 0 ? node.description : node.namea,
-                            value: node
-                        }))
+                    ).map(node => ({
+                        text: node.description.length > 0 ? node.description : node.name,
+                        value: node
+                    }))
 
-                    textRole: "text"
-                    valueRole: "value"
-
-                    function syncCurrentDevice() {
-                        if (!Pipewire.ready || !popup.sink)
-                            return
-
-                        currentIndex = indexOfValue(popup.sink)
+                    onDeviceSelected: node => {
+                        Pipewire.preferredDefaultAudioSink = node
                     }
-
-                    Component.onCompleted: syncCurrentDevice()
 
                     Connections {
                         target: Pipewire
@@ -202,101 +193,6 @@ PopupWindow {
 
                         function onDefaultAudioSinkChanged() {
                             outputDeviceSelect.syncCurrentDevice()
-                        }
-                    }
-
-                    onActivated: {
-                        Pipewire.preferredDefaultAudioSink = currentValue
-                    }
-
-                    contentItem: Text {
-                        leftPadding: 10
-                        rightPadding: 28
-
-                        text: outputDeviceSelect.displayText
-                        color: "white"
-
-                        verticalAlignment: Text.AlignVCenter
-                        elide: Text.ElideRight
-                    }
-
-                    indicator: Text {
-                        text: "▾"
-                        color: "white"
-                        opacity: 0.65
-
-                        anchors {
-                            right: parent.right
-                            rightMargin: 10
-                            verticalCenter: parent.verticalCenter
-                        }
-                    }
-
-                    background: Rectangle {
-                        radius: 6
-
-                        color: outputDeviceSelect.hovered ? "#303030" : "#282828"
-
-                        border.width: 1
-                        border.color: "#404040"
-                    }
-
-                    delegate: ItemDelegate {
-                        id: deviceDelegate
-
-                        required property var model
-
-                        width: outputDeviceSelect.width
-                        implicitHeight: 30
-
-                        contentItem: RowLayout {
-                            spacing: 8
-
-                            Rectangle {
-                                implicitWidth: 8
-                                implicitHeight: 8
-                                radius: 4
-
-                                color: model.value === outputDeviceSelect.currentValue ? "white" : "transparent"
-                            }
-
-                            Text {
-                                Layout.fillWidth: true
-
-                                text: model.text
-                                color: "white"
-
-                                verticalAlignment: Text.AlignVCenter
-                                elide: Text.ElideRight
-                            }
-                        }
-
-                        background: Rectangle {
-                            radius: 5
-                            color: parent.hovered ? "#303030" : "transparent"
-                        }
-                    }
-
-                    popup: Popup {
-                        y: outputDeviceSelect.height + 4
-                        width: outputDeviceSelect.width
-                        implicitHeight: contentItem.implicitHeight + 8
-                        padding: 4
-                        contentItem: ListView {
-                            clip: true
-                            implicitHeight: contentHeight
-                            model: outputDeviceSelect.popup.visible ? outputDeviceSelect.delegateModel : null
-                            currentIndex: outputDeviceSelect.highlightedIndex
-
-                            ScrollIndicator.vertical: ScrollIndicator {}
-                        }
-
-                        background: Rectangle {
-                            radius: 6
-                            color: "#202020"
-
-                            border.width: 1
-                            border.color: "#404040"
                         }
                     }
                 }
@@ -428,29 +324,20 @@ PopupWindow {
                 }
 
                 // Input devices
-                ComboBox {
+                AudioDeviceSelect {
                     id: inputDeviceSelect
 
-                    Layout.fillWidth: true
-                    implicitHeight: 30
-                    model: Pipewire.nodes.values.filter(node =>
+                    selectedNode: popup.source
+                    deviceModel: Pipewire.nodes.values.filter(node =>
                         node.audio !== null && !node.isSink && !node.isStream
-                        ).map(node => ({
-                            text: node.description.length > 0 ? node.description : node.namea,
-                            value: node
-                        }))
+                    ).map(node => ({
+                        text: node.description.length > 0 ? node.description : node.name,
+                        value: node
+                    }))
 
-                    textRole: "text"
-                    valueRole: "value"
-
-                    function syncCurrentDevice() {
-                        if (!Pipewire.ready || !popup.source)
-                            return
-
-                        currentIndex = indexOfValue(popup.source)
+                    onDeviceSelected: node => {
+                        Pipewire.preferredDefaultAudioSource = node
                     }
-
-                    Component.onCompleted: syncCurrentDevice()
 
                     Connections {
                         target: Pipewire
@@ -459,103 +346,8 @@ PopupWindow {
                             inputDeviceSelect.syncCurrentDevice()
                         }
 
-                        function onDefaultAudioSinkChanged() {
+                        function onDefaultAudioSourceChanged() {
                             inputDeviceSelect.syncCurrentDevice()
-                        }
-                    }
-
-                    onActivated: {
-                        Pipewire.preferredDefaultAudioSource = currentValue
-                    }
-
-                    contentItem: Text {
-                        leftPadding: 10
-                        rightPadding: 28
-
-                        text: inputDeviceSelect.displayText
-                        color: "white"
-
-                        verticalAlignment: Text.AlignVCenter
-                        elide: Text.ElideRight
-                    }
-
-                    indicator: Text {
-                        text: "▾"
-                        color: "white"
-                        opacity: 0.65
-
-                        anchors {
-                            right: parent.right
-                            rightMargin: 10
-                            verticalCenter: parent.verticalCenter
-                        }
-                    }
-
-                    background: Rectangle {
-                        radius: 6
-
-                        color: inputDeviceSelect.hovered ? "#303030" : "#282828"
-
-                        border.width: 1
-                        border.color: "#404040"
-                    }
-
-                    delegate: ItemDelegate {
-                        id: deviceDelegate
-
-                        required property var model
-
-                        width: inputDeviceSelect.width
-                        implicitHeight: 30
-
-                        contentItem: RowLayout {
-                            spacing: 8
-
-                            Rectangle {
-                                implicitWidth: 8
-                                implicitHeight: 8
-                                radius: 4
-
-                                color: model.value === inputDeviceSelect.currentValue ? "white" : "transparent"
-                            }
-
-                            Text {
-                                Layout.fillWidth: true
-
-                                text: model.text
-                                color: "white"
-
-                                verticalAlignment: Text.AlignVCenter
-                                elide: Text.ElideRight
-                            }
-                        }
-
-                        background: Rectangle {
-                            radius: 5
-                            color: parent.hovered ? "#303030" : "transparent"
-                        }
-                    }
-
-                    popup: Popup {
-                        y: inputDeviceSelect.height + 4
-                        width: inputDeviceSelect.width
-                        implicitHeight: contentItem.implicitHeight + 8
-                        padding: 4
-                        contentItem: ListView {
-                            clip: true
-                            implicitHeight: contentHeight
-                            model: inputDeviceSelect.popup.visible ? inputDeviceSelect.delegateModel : null
-                            currentIndex: inputDeviceSelect.highlightedIndex
-
-                            ScrollIndicator.vertical: ScrollIndicator {}
-                        }
-
-                        background: Rectangle {
-                            radius: 6
-                            color: "#202020"
-
-                            border.width: 1
-                            border.color: "#404040"
                         }
                     }
                 }
