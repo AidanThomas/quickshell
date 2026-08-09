@@ -87,83 +87,19 @@ PopupWindow {
                     Layout.fillWidth: true
                     spacing: 10
 
-                    Rectangle {
-                        implicitWidth: 28
-                        implicitHeight: 28
-                        radius: 6
-
-                        color: outputMuteArea.containsMouse ? "#303030" : "transparent"
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: {
-                                if (!popup.sink || popup.sink.audio.muted)
-                                    return "󰖁"
-
-                                return ""
-                            }
-
-                            color: "white"
-                        }
-
-                        MouseArea {
-                            id: outputMuteArea
-
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-                                if (popup.sink)
-                                    popup.sink.audio.muted = !popup.sink.audio.muted
-                            }
+                    AudioMuteButton {
+                        muted: popup.sink ? popup.sink.audio.muted : true
+                        onToggled: {
+                            if (popup.sink)
+                                popup.sink.audio.muted = !popup.sink.audio.muted
                         }
                     }
 
-                    Slider {
-                        id: outputSlider
-
-                        Layout.fillWidth: true
-
-                        from: 0
-                        to: 1
-
+                    AudioSlider {
                         value: popup.sink ? popup.sink.audio.volume : 0
-
                         onMoved: {
                             if (popup.sink)
                                 popup.sink.audio.volume = value
-                        }
-
-                        background: Rectangle {
-                            x: outputSlider.leftPadding
-                            y: outputSlider.topPadding + outputSlider.availableHeight / 2 - height / 2
-
-                            width: outputSlider.availableWidth
-                            height: 4
-                            radius: 2
-
-                            color: "#404040"
-
-                            Rectangle {
-                                width: outputSlider.visualPosition * parent.width
-                                height: parent.height
-                                radius: parent.radius
-                                color: "white"
-                            }
-                        }
-
-                        handle: Rectangle {
-                            x: outputSlider.leftPadding
-                                + outputSlider.visualPosition
-                                * (outputSlider.availableWidth - width)
-                            y: outputSlider.topPadding
-                                + outputSlider.availableHeight / 2
-                                - height / 2
-
-                            implicitWidth: 12
-                            implicitHeight: 12
-                            radius: 6
-
-                            color: "white"
                         }
                     }
                 }
@@ -240,87 +176,24 @@ PopupWindow {
                     Layout.fillWidth: true
                     spacing: 10
 
-                    Rectangle {
-                        implicitWidth: 28
-                        implicitHeight: 28
-                        radius: 6
-
-                        color: inputMuteArea.containsMouse ? "#303030" : "transparent"
-
-                        Text {
-                            anchors.centerIn: parent
-
-                            text: {
-                                if (!popup.source || popup.source.audio.muted)
-                                    return ""
-
-                                return ""
-                            }
-
-                            color: "white"
-
-                            MouseArea {
-                                id: inputMuteArea
-
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                onClicked: {
-                                    if (popup.source)
-                                        popup.source.audio.muted = !popup.source.audio.muted
-                                }
-                            }
+                    AudioMuteButton {
+                        muted: popup.source ? popup.source.audio.muted : true
+                        activeIcon: ""
+                        mutedIcon: ""
+                        onToggled: {
+                            if (popup.source)
+                                popup.source.audio.muted = !popup.source.audio.muted
                         }
                     }
 
-                    Slider {
-                        id: inputSlider
-
-                        Layout.fillWidth: true
-
-                        from: 0
-                        to: 1
-
+                    AudioSlider {
                         value: popup.source ? popup.source.audio.volume : 0
-
                         onMoved: {
                             if (popup.source)
                                 popup.source.audio.volume = value
                         }
-
-                        background: Rectangle {
-                            x: inputSlider.leftPadding
-                            y: inputSlider.topPadding + inputSlider.availableHeight / 2 - height / 2
-
-                            width: inputSlider.availableWidth
-                            height: 4
-                            radius: 2
-
-                            color: "#404040"
-
-                            Rectangle {
-                                width: inputSlider.visualPosition * parent.width
-                                height: parent.height
-                                radius: parent.radius
-                                color: "white"
-                            }
-                        }
-
-                        handle: Rectangle {
-                            x: inputSlider.leftPadding
-                                + inputSlider.visualPosition
-                                * (inputSlider.availableWidth - width)
-                            y: inputSlider.topPadding
-                                + inputSlider.availableHeight / 2
-                                - height / 2
-
-                            implicitWidth: 12
-                            implicitHeight: 12
-                            radius: 6
-
-                            color: "white"
-                        }
-
                     }
+
                 }
 
                 // Input devices
@@ -348,6 +221,82 @@ PopupWindow {
 
                         function onDefaultAudioSourceChanged() {
                             inputDeviceSelect.syncCurrentDevice()
+                        }
+                    }
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                implicitHeight: 1
+                color: "#404040"
+            }
+
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 6
+
+                Text {
+                    text: "APPLICATIONS"
+                    color: "white"
+                    opacity: 0.65
+
+                    font {
+                        pixelSize: 11
+                        bold: true
+                    }
+                }
+
+                Repeater {
+                    model: Pipewire.nodes
+
+                    delegate: Item {
+                        id: streamItem
+
+                        required property var modelData
+
+                        visible: modelData.audio !== null && modelData.isStream && modelData.isSink
+
+                        Layout.fillWidth: true
+                        implicitHeight: visible ? 30 : 0
+
+                        PwObjectTracker {
+                            objects: [streamItem.modelData]
+                        }
+
+                        RowLayout {
+                            anchors.fill: parent
+                            spacing: 8
+
+                            Text {
+                                Layout.preferredWidth: 110
+                                text: streamItem.modelData.description.length > 0
+                                    ? streamItem.modelData.description
+                                    : streamItem.modelData.name
+
+                                color: "white"
+                                elide: Text.ElideRight
+                            }
+
+                            AudioMuteButton {
+                                muted: streamItem.modelData.audio.muted
+                                onToggled: {
+                                    streamItem.modelData.audio.muted = !streamItem.modelData.audio.muted
+                                }
+                            }
+
+                            AudioSlider {
+                                value: streamItem.modelData.audio.volume
+                                onMoved: {
+                                    streamItem.modelData.audio.volume = value
+                                }
+                            }
+
+                            Text {
+                                text: Math.round(streamItem.modelData.audio.volume * 100) + "%"
+                                color: "white"
+                                opacity: 0.65
+                            }
                         }
                     }
                 }
