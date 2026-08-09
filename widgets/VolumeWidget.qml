@@ -1,4 +1,5 @@
 import qs.config
+import qs.widgets.audio
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Pipewire

@@ -55,7 +55,7 @@ ComboBox {
     background: Rectangle {
         radius: 6
 
-        color: root.hovered ? Theme.surfaceHover : theme.surfaceRaised
+        color: root.hovered ? Theme.surfaceHover : Theme.surfaceRaised
 
         border.width: 1
         border.color: Theme.border
