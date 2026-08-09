@@ -1,4 +1,4 @@
-import "../widgets"
+import qs.widgets
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
@@ -30,7 +30,7 @@ PanelWindow {
             Layout.fillWidth: true
         }
 
-        WindowTitleWidget {}
+        PlayerWidget {}
 
         Item {
             Layout.fillWidth: true
