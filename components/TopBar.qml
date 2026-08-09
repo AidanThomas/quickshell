@@ -25,6 +25,7 @@ PanelWindow {
         spacing: 10
 
         WorkspacesWidget {}
+        AudioVisualizerWidget {}
 
         Item {
             Layout.fillWidth: true
