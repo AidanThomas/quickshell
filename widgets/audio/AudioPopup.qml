@@ -246,53 +246,11 @@ PopupWindow {
                 Repeater {
                     model: Pipewire.nodes
 
-                    delegate: Item {
-                        id: streamItem
-
+                    delegate: AudioStreamRow {
                         required property var modelData
-
-                        visible: modelData.audio !== null && modelData.isStream && modelData.isSink
-
-                        Layout.fillWidth: true
+                        node: modelData
+                        visible: modelData.Audio !== null && modelData.isStream && modelData.isSink
                         implicitHeight: visible ? 30 : 0
-
-                        PwObjectTracker {
-                            objects: [streamItem.modelData]
-                        }
-
-                        RowLayout {
-                            anchors.fill: parent
-                            spacing: 8
-
-                            Text {
-                                Layout.preferredWidth: 110
-                                text: streamItem.modelData.description.length > 0
-                                    ? streamItem.modelData.description
-                                    : streamItem.modelData.name
-
-                                color: Theme.text
-                                elide: Text.ElideRight
-                            }
-
-                            AudioMuteButton {
-                                muted: streamItem.modelData.audio.muted
-                                onToggled: {
-                                    streamItem.modelData.audio.muted = !streamItem.modelData.audio.muted
-                                }
-                            }
-
-                            AudioSlider {
-                                value: streamItem.modelData.audio.volume
-                                onMoved: {
-                                    streamItem.modelData.audio.volume = value
-                                }
-                            }
-
-                            Text {
-                                text: Math.round(streamItem.modelData.audio.volume * 100) + "%"
-                                color: Theme.textMuted
-                            }
-                        }
                     }
                 }
             }
