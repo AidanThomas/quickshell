@@ -1,3 +1,4 @@
+import qs.config
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -35,7 +36,7 @@ PopupWindow {
         topRightRadius: 4
         bottomLeftRadius: 12
         bottomRightRadius: 12
-        color: "#202020"
+        color: Theme.surface
 
         ColumnLayout {
             id: content
@@ -61,8 +62,7 @@ PopupWindow {
 
                     Text {
                         text: "OUTPUT"
-                        color: "white"
-                        opacity: 0.65
+                        color: Theme.textMuted
 
                         font {
                             pixelSize: 11
@@ -76,8 +76,7 @@ PopupWindow {
 
                     Text {
                         text: popup.sink ? Math.round(popup.sink.audio.volume * 100) + "%" : "--%"
-                        color: "white"
-                        opacity: 0.65
+                        color: Theme.textMuted
                         font.pixelSize: 11
                     }
                 }
@@ -137,7 +136,7 @@ PopupWindow {
             Rectangle {
                 Layout.fillWidth: true
                 implicitHeight:  1
-                color: "#404040"
+                color: Theme.border
             }
 
             ColumnLayout {
@@ -150,8 +149,7 @@ PopupWindow {
 
                     Text {
                         text: "INPUT"
-                        color: "white"
-                        opacity: 0.65
+                        color: Theme.textMuted
 
                         font {
                             pixelSize: 11
@@ -165,8 +163,7 @@ PopupWindow {
 
                     Text {
                         text: popup.source ? Math.round(popup.source.audio.volume * 100) + "%" : "--%"
-                        color: "white"
-                        opacity: 0.65
+                        color: Theme.textMuted
                         font.pixelSize: 11
                     }
                 }
@@ -229,7 +226,7 @@ PopupWindow {
             Rectangle {
                 Layout.fillWidth: true
                 implicitHeight: 1
-                color: "#404040"
+                color: Theme.border
             }
 
             ColumnLayout {
@@ -238,8 +235,7 @@ PopupWindow {
 
                 Text {
                     text: "APPLICATIONS"
-                    color: "white"
-                    opacity: 0.65
+                    color: Theme.textMuted
 
                     font {
                         pixelSize: 11
@@ -274,7 +270,7 @@ PopupWindow {
                                     ? streamItem.modelData.description
                                     : streamItem.modelData.name
 
-                                color: "white"
+                                color: Theme.text
                                 elide: Text.ElideRight
                             }
 
@@ -294,8 +290,7 @@ PopupWindow {
 
                             Text {
                                 text: Math.round(streamItem.modelData.audio.volume * 100) + "%"
-                                color: "white"
-                                opacity: 0.65
+                                color: Theme.textMuted
                             }
                         }
                     }

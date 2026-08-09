@@ -1,3 +1,4 @@
+import qs.config
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -34,7 +35,7 @@ ComboBox {
         rightPadding: 28
 
         text: root.displayText
-        color: "white"
+        color: Theme.text
 
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
@@ -42,8 +43,7 @@ ComboBox {
 
     indicator: Text {
         text: "▾"
-        color: "white"
-        opacity: 0.65
+        color: Theme.textMuted
 
         anchors {
             right: parent.right
@@ -55,10 +55,10 @@ ComboBox {
     background: Rectangle {
         radius: 6
 
-        color: root.hovered ? "#303030" : "#282828"
+        color: root.hovered ? Theme.surfaceHover : theme.surfaceRaised
 
         border.width: 1
-        border.color: "#404040"
+        border.color: Theme.border
     }
 
     delegate: ItemDelegate {
@@ -77,14 +77,14 @@ ComboBox {
                 implicitHeight: 8
                 radius: 4
 
-                color: model.value === root.currentValue ? "white" : "transparent"
+                color: model.value === root.currentValue ? Theme.text : "transparent"
             }
 
             Text {
                 Layout.fillWidth: true
 
                 text: model.text
-                color: "white"
+                color: Theme.text
 
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
@@ -93,7 +93,7 @@ ComboBox {
 
         background: Rectangle {
             radius: 5
-            color: deviceDelegate.hovered ? "#303030" : "transparent"
+            color: deviceDelegate.hovered ? Theme.surfaceHover : "transparent"
         }
     }
 
@@ -115,10 +115,10 @@ ComboBox {
 
         background: Rectangle {
             radius: 6
-            color: "#202020"
+            color: Theme.surface
 
             border.width: 1
-            border.color: "#404040"
+            border.color: Theme.border
         }
     }
 }

@@ -1,4 +1,5 @@
-import "components"
+import qs.components
+import qs.config
 import QtQml
 import QtQuick
 import QtQuick.Layouts
@@ -8,7 +9,7 @@ import Quickshell
 ShellRoot {
     id: root
 
-    property color frameColor: "#1e1e2e"
+    property color frameColor: Theme.background
     property int cornerRadius: 10 
     property int frameThickness: 5 
     property int topBarHeight: 40

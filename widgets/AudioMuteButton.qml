@@ -15,12 +15,12 @@ Rectangle {
     implicitHeight: 28
     radius: 6
 
-    color: mouseArea.containsMouse ? "#303030" : "transparent"
+    color: mouseArea.containsMouse ? Theme.surfaceHover : "transparent"
 
     Text {
         anchors.centerIn: parent
         text: root.muted ? mutedIcon : activeIcon
-        color: "white"
+        color: Theme.text
     }
 
     MouseArea {

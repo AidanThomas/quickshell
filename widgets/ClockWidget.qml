@@ -1,3 +1,4 @@
+import qs.config
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
@@ -16,6 +17,6 @@ Rectangle {
         id: clockText
         anchors.centerIn: parent
         text: Qt.formatDateTime(clock.date, "ddd dd MMM hh:mm")
-        color: "white"
+        color: Theme.text
     }
 }

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import qs.config
 
 Slider {
     id: root
@@ -16,13 +17,13 @@ Slider {
         width: root.availableWidth
         height: 4
         radius: 2
-        color: "#404040"
+        color: Theme.border
 
         Rectangle {
             width: root.visualPosition * parent.width
             height: parent.height
             radius: parent.radius
-            color: "white"
+            color: Theme.text
         }
     }
 
@@ -32,6 +33,6 @@ Slider {
         implicitWidth: 12
         implicitHeight: 12
         radius: 6
-        color: "white"
+        color: Theme.text
     }
 }

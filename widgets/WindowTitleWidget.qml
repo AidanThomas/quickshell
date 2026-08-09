@@ -1,3 +1,4 @@
+import qs.config
 import QtQuick
 import Quickshell.Hyprland
 
@@ -16,7 +17,7 @@ Item {
     Text {
         id: titleText
         anchors.centerIn: parent
-        color: "white"
+        color: Theme.text
         elide: Text.ElideRight
         maximumLineCount: 1
 

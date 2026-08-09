@@ -1,3 +1,4 @@
+import qs.config
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Pipewire
@@ -62,12 +63,12 @@ Item {
                     return "󰖁"
                 return ""
             }
-            color: "white"
+            color: Theme.text
         }
 
         Text {
             text: root.sink ? Math.round(root.sink.audio.volume * 100) + "%" : "--%"
-            color: "white"
+            color: Theme.text
         }
     }
 }
