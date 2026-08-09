@@ -29,22 +29,6 @@ ComboBox {
 
     Component.onCompleted: syncCurrentDevice()
 
-    // Connections {
-    //     target: Pipewire
-    //
-    //     function onReadyChanged() {
-    //         outputDeviceSelect.syncCurrentDevice()
-    //     }
-    //
-    //     function onDefaultAudioSinkChanged() {
-    //         outputDeviceSelect.syncCurrentDevice()
-    //     }
-    // }
-    //
-    // onActivated: {
-    //     Pipewire.preferredDefaultAudioSink = currentValue
-    // }
-
     contentItem: Text {
         leftPadding: 10
         rightPadding: 28
