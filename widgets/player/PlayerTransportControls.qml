@@ -13,7 +13,7 @@ Row {
         height: 24
         radius: 6
 
-        color: previousMouse.containsMouse ? Theme.border : "transparent"
+        color: previousMouse.containsMouse ? Theme.surfaceHover : "transparent"
 
         Text {
             anchors.centerIn: parent
@@ -36,7 +36,7 @@ Row {
         height: 24
         radius: 6
 
-        color: playPauseMouse.containsMouse ? Theme.border : "transparent"
+        color: playPauseMouse.containsMouse ? Theme.surfaceHover : "transparent"
 
         Text {
             anchors.centerIn: parent
@@ -59,7 +59,7 @@ Row {
         height: 24
         radius: 6
 
-        color: nextMouse.containsMouse ? Theme.border : "transparent"
+        color: nextMouse.containsMouse ? Theme.surfaceHover : "transparent"
 
         Text {
             anchors.centerIn: parent
