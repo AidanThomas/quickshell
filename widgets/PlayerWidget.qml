@@ -1,4 +1,5 @@
 import qs.config
+import qs.widgets.player
 import QtQuick
 import Quickshell
 import Quickshell.Services.Mpris
