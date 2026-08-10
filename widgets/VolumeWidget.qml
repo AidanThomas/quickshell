@@ -28,6 +28,7 @@ Item {
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton
+        cursorShape: Qt.PointingHandCursor
         onClicked: popup.visible = !popup.visible
     }
 
@@ -58,6 +59,7 @@ Item {
             MouseArea {
                 anchors.fill: parent
                 acceptedButtons: Qt.RightButton
+                cursorShape: Qt.PointingHandCursor
                 onClicked: {
                     if (root.source)
                         root.source.audio.muted = !root.source.audio.muted
@@ -94,9 +96,8 @@ Item {
 
             MouseArea {
                 anchors.fill: parent
-
                 acceptedButtons: Qt.RightButton
-
+                cursorShape: Qt.PointingHandCursor
                 onClicked: {
                     if (root.sink)
                         root.sink.audio.muted = !root.sink.audio.muted
