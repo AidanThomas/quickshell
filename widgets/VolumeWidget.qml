@@ -27,49 +27,93 @@ Item {
 
     MouseArea {
         anchors.fill: parent
-
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-        onClicked: mouse => {
-            if (mouse.button === Qt.LeftButton) {
-                popup.visible = !popup.visible
-            } else if (mouse.button === Qt.RightButton) {
-                if (root.sink)
-                    root.sink.audio.muted = !root.sink.audio.muted
-            }
-        }
-
-        onWheel: wheel => {
-            if (!root.sink)
-                return
-
-            const step = 0.02
-            if (wheel.angleDelta.y > 0)  {
-                root.sink.audio.volume = Math.min(1, root.sink.audio.volume + step)
-            } else if (wheel.angleDelta.y < 0) {
-                root.sink.audio.volume = Math.max(0, root.sink.audio.volume - step)
-            }
-        }
+        acceptedButtons: Qt.LeftButton
+        onClicked: popup.visible = !popup.visible
     }
 
-    RowLayout {
+    Row {
         id: content
-        spacing: 6
 
-        Text {
-            text: {
-                if (!root.sink)
-                    return ""
-                if (root.sink.audio.muted)
-                    return "󰖁"
-                return ""
+        spacing: 10
+
+        Item {
+            implicitWidth: microphoneIcon.implicitWidth
+            implicitHeight: microphoneIcon.implicitHeight
+
+            Text {
+                id: microphoneIcon
+                text: {
+                    if (!root.source)
+                        return ""
+
+                    if (root.source.audio.muted)
+                        return ""
+
+                    return ""
+                }
+
+                color: Theme.text
             }
-            color: Theme.text
+
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.RightButton
+                onClicked: {
+                    if (root.source)
+                        root.source.audio.muted = !root.source.audio.muted
+                }
+            }
         }
 
-        Text {
-            text: root.sink ? Math.round(root.sink.audio.volume * 100) + "%" : "--%"
-            color: Theme.text
+        Item {
+            implicitWidth: speakerContent.implicitWidth
+            implicitHeight: speakerContent.implicitHeight
+
+            Row {
+                id: speakerContent
+                spacing: 6
+
+                Text {
+                    id: speakerIcon
+                    text: {
+                        if (!root.sink)
+                            return ""
+                        if (root.sink.audio.muted)
+                            return "󰖁"
+                        return ""
+                    }
+                    color: Theme.text
+                }
+
+                Text {
+                    id: speakerVolume
+                    text: root.sink ? Math.round(root.sink.audio.volume * 100) + "%" : "--%"
+                    color: Theme.text
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+
+                acceptedButtons: Qt.RightButton
+
+                onClicked: {
+                    if (root.sink)
+                        root.sink.audio.muted = !root.sink.audio.muted
+                }
+
+                onWheel: wheel => {
+                    if (!root.sink)
+                        return
+
+                    const step = 0.02
+                    if (wheel.angleDelta.y > 0)  {
+                        root.sink.audio.volume = Math.min(1, root.sink.audio.volume + step)
+                    } else if (wheel.angleDelta.y < 0) {
+                        root.sink.audio.volume = Math.max(0, root.sink.audio.volume - step)
+                    }
+                }
+            }
         }
     }
 }
