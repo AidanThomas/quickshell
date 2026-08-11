@@ -1,9 +1,7 @@
 import qs.components
 import qs.config
-import QtQml
+
 import QtQuick
-import QtQuick.Layouts
-import QtQuick.Shapes
 import Quickshell
 
 ShellRoot {

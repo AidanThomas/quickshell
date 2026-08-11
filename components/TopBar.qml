@@ -37,6 +37,7 @@ PanelWindow {
             Layout.fillWidth: true
         }
 
+        NotificationWidget {}
         VolumeWidget {}
         ClockWidget {}
     }
