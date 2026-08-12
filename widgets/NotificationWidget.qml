@@ -13,40 +13,69 @@ Item {
 
     property bool doNotDisturb: false
     property int unreadCount: 0
-    property var notificationTimes: []
+    property var notificationTimeStamps: []
 
     function removeToast(notification) {
         for (let i = 0; i < toastModel.count; i++) {
             if (toastModel.get(i).notification === notification) {
-                toastModel.remove(i)
-                return
+                toastModel.remove(i);
+                return;
             }
         }
     }
 
     function hideAllToasts() {
         for (let i = 0; i < toastRepeater.count; i++) {
-            const toast = toastRepeater.itemAt(i)
+            const toast = toastRepeater.itemAt(i);
             if (toast?.open)
-                toast.hideToast()
+                toast.hideToast();
         }
+    }
+
+    function recordNotificationTimeStamp(notification) {
+        notificationTimeStamps = [...notificationTimeStamps,
+            {
+                notification: notification,
+                receivedAt: new Date()
+            }
+        ];
+    }
+
+    function receivedAtFor(notification) {
+        const entry = notificationTimeStamps.find(entry => entry.notification === notification);
+        return entry?.receivedAt ?? null;
+    }
+
+    function removeNotificationTimestamp(notification) {
+        notificationTimeStamps = notificationTimeStamps.filter(entry => entry.notification !== notification);
+    }
+
+    function dismissNotification(notification) {
+        removeNotificationTimestamp(notification);
+        notification.dismiss();
+    }
+
+    function clearNotifications() {
+        for (const notification of notificationServer.trackedNotifications.values) {
+            notification.dismiss();
+        }
+        notificationTimeStamps = [];
     }
 
     NotificationServer {
         id: notificationServer
         onNotification: notification => {
-            notification.tracked = true
+            notification.tracked = true;
 
-            root.notificationTimes = [...root.notificationTimes, {
-                notification: notification,
-                receivedAt: new Date()
-            }]
+            root.recordNotificationTimeStamp(notification);
 
             if (!notificationCenter.open) {
-                root.unreadCount++
+                root.unreadCount++;
 
                 if (!root.doNotDisturb) {
-                    toastModel.insert(0, { notification: notification })
+                    toastModel.insert(0, {
+                        notification: notification
+                    });
                 }
             }
         }
@@ -79,18 +108,18 @@ Item {
         cursorShape: Qt.PointingHandCursor
         onClicked: mouse => {
             if (mouse.button == Qt.RightButton) {
-                root.doNotDisturb = !root.doNotDisturb
+                root.doNotDisturb = !root.doNotDisturb;
 
                 if (root.doNotDisturb)
-                    root.hideAllToasts()
+                    root.hideAllToasts();
 
-                return
+                return;
             }
 
-            notificationCenter.open = !notificationCenter.open
+            notificationCenter.open = !notificationCenter.open;
             if (notificationCenter.open) {
-                root.unreadCount = 0
-                root.hideAllToasts()
+                root.unreadCount = 0;
+                root.hideAllToasts();
             }
         }
     }
@@ -98,12 +127,13 @@ Item {
     NotificationCenter {
         id: notificationCenter
         notificationServer: notificationServer
-        notificationTimes: root.notificationTimes
+        receivedAtFor: root.receivedAtFor
+        dismissNotification: root.dismissNotification
         doNotDisturb: root.doNotDisturb
         onDoNotDisturbToggled: {
-            root.doNotDisturb = !root.doNotDisturb
+            root.doNotDisturb = !root.doNotDisturb;
             if (root.doNotDisturb)
-                root.hideAllToasts()
+                root.hideAllToasts();
         }
     }
 
@@ -138,13 +168,12 @@ Item {
                 stackIndex: index
                 Component.onCompleted: showToast()
                 onClicked: {
-                    notificationCenter.open = true
-                    root.unreadCount = 0
-                    root.hideAllToasts()
+                    notificationCenter.open = true;
+                    root.unreadCount = 0;
+                    root.hideAllToasts();
                 }
                 onClosed: root.removeToast(notification)
             }
         }
     }
-
 }
