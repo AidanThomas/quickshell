@@ -155,7 +155,7 @@ PanelWindow {
                         return time ? Qt.formatTime(time, "HH:mm") : "";
                     }
                     onClicked: root.openApplication(modelData)
-                    onDismissRequested: root.dismissNotification(modelData)
+                    onDismissed: root.dismissNotification(modelData)
                 }
             }
         }

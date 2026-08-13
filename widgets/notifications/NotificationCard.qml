@@ -14,7 +14,7 @@ Rectangle {
     property string timestamp: ""
 
     signal clicked
-    signal dismissRequested
+    signal dismissed
 
     implicitHeight: content.implicitHeight + 20
     color: Theme.background
@@ -52,45 +52,11 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
         }
 
-        Column {
-            id: notificationContent
-            width: parent.width - appIcon.width - dismissButton.width - parent.spacing * 2
-            spacing: 2
-
-            Row {
-                width: parent.width
-
-                Text {
-                    id: appName
-                    text: root.notification.appName
-                    color: Theme.textMuted
-                }
-
-                Item {
-                    width: parent.width - appName.implicitWidth - notificationTime.implicitWidth
-                    height: 1
-                }
-
-                Text {
-                    id: notificationTime
-                    visible: root.showTimestamp
-                    text: root.timestamp
-                    color: Theme.textMuted
-                }
-            }
-
-            Text {
-                text: root.notification.summary
-                color: Theme.text
-            }
-
-            Text {
-                width: parent.width
-                text: root.notification.body
-                color: Theme.textMuted
-                wrapMode: Text.Wrap
-                textFormat: Text.PlainText
-            }
+        NotificationContent {
+            showTimestamp: root.showTimestamp
+            notification: root.notification
+            timestamp: root.timestamp
+            width: parent.width - appIcon.width - parent.spacing * 2
         }
 
         Item {
@@ -108,7 +74,7 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
-                onClicked: root.dismissRequested()
+                onClicked: root.dismissed()
             }
         }
     }

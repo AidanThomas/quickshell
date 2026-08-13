@@ -41,7 +41,7 @@ Item {
             root.hideToast();
             root.clicked();
         }
-        onDismissRequested: {
+        onDismissed: {
             root.notification?.dismiss();
             root.hideToast();
         }
