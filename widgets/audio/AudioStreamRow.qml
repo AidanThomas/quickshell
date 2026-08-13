@@ -1,4 +1,5 @@
 import qs.config
+
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Pipewire
@@ -29,14 +30,14 @@ Item {
         AudioMuteButton {
             muted: root.node.audio.muted
             onToggled: {
-                root.node.audio.muted = !root.node.audio.muted
+                root.node.audio.muted = !root.node.audio.muted;
             }
         }
 
         AudioSlider {
             value: root.node.audio.volume
             onMoved: {
-                root.node.audio.volume = value
+                root.node.audio.volume = value;
             }
         }
 

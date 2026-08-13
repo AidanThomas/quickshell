@@ -2,12 +2,11 @@ import qs.widgets
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Hyprland
 
 PanelWindow {
     id: topBar
 
-    required property int height
+    required property int barHeight
     required color
 
     anchors {
@@ -16,7 +15,7 @@ PanelWindow {
         right: true
     }
 
-    implicitHeight: height
+    implicitHeight: barHeight
 
     RowLayout {
         anchors.fill: parent

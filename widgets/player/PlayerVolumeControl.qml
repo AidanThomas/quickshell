@@ -1,4 +1,5 @@
 import qs.config
+
 import QtQuick
 import QtQuick.Controls
 
@@ -57,9 +58,7 @@ Item {
 
         handle: Rectangle {
             x: volumeSlider.leftPadding + volumeSlider.availableWidth / 2 - width / 2
-            y: volumeSlider.topPadding
-                + volumeSlider.visualPosition
-                * (volumeSlider.availableHeight - height)
+            y: volumeSlider.topPadding + volumeSlider.visualPosition * (volumeSlider.availableHeight - height)
             width: 10
             height: 10
             radius: width / 2

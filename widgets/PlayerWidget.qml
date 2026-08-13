@@ -1,7 +1,6 @@
 import qs.config
 import qs.widgets.player
 import QtQuick
-import Quickshell
 import Quickshell.Services.Mpris
 
 Item {
@@ -12,11 +11,8 @@ Item {
     implicitWidth: content.implicitWidth
     implicitHeight: content.implicitHeight
 
-    readonly property var player: Mpris.players.values.find(
-        player => player.identity === "Spotify"
-    )
+    readonly property var player: Mpris.players.values.find(player => player.identity === "Spotify")
     readonly property bool hasPlayer: root.player !== undefined
-
 
     Text {
         id: content

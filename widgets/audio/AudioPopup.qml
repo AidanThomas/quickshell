@@ -1,6 +1,6 @@
 import qs.config
+
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Services.Pipewire
@@ -16,7 +16,7 @@ PopupWindow {
         item: anchorItem
         edges: Edges.Bottom
         gravity: Edges.Bottom
-        margins.top: 27 
+        margins.top: 27
     }
 
     implicitWidth: 320
@@ -90,7 +90,7 @@ PopupWindow {
                         muted: popup.sink ? popup.sink.audio.muted : true
                         onToggled: {
                             if (popup.sink)
-                                popup.sink.audio.muted = !popup.sink.audio.muted
+                                popup.sink.audio.muted = !popup.sink.audio.muted;
                         }
                     }
 
@@ -98,7 +98,7 @@ PopupWindow {
                         value: popup.sink ? popup.sink.audio.volume : 0
                         onMoved: {
                             if (popup.sink)
-                                popup.sink.audio.volume = value
+                                popup.sink.audio.volume = value;
                         }
                     }
                 }
@@ -108,26 +108,24 @@ PopupWindow {
                     id: outputDeviceSelect
 
                     selectedNode: popup.sink
-                    deviceModel: Pipewire.nodes.values.filter(node =>
-                        node.audio !== null && node.isSink && !node.isStream
-                    ).map(node => ({
-                        text: node.description.length > 0 ? node.description : node.name,
-                        value: node
-                    }))
+                    deviceModel: Pipewire.nodes.values.filter(node => node.audio !== null && node.isSink && !node.isStream).map(node => ({
+                                text: node.description.length > 0 ? node.description : node.name,
+                                value: node
+                            }))
 
                     onDeviceSelected: node => {
-                        Pipewire.preferredDefaultAudioSink = node
+                        Pipewire.preferredDefaultAudioSink = node;
                     }
 
                     Connections {
                         target: Pipewire
 
                         function onReadyChanged() {
-                            outputDeviceSelect.syncCurrentDevice()
+                            outputDeviceSelect.syncCurrentDevice();
                         }
 
                         function onDefaultAudioSinkChanged() {
-                            outputDeviceSelect.syncCurrentDevice()
+                            outputDeviceSelect.syncCurrentDevice();
                         }
                     }
                 }
@@ -135,7 +133,7 @@ PopupWindow {
 
             Rectangle {
                 Layout.fillWidth: true
-                implicitHeight:  1
+                implicitHeight: 1
                 color: Theme.border
             }
 
@@ -179,7 +177,7 @@ PopupWindow {
                         mutedIcon: ""
                         onToggled: {
                             if (popup.source)
-                                popup.source.audio.muted = !popup.source.audio.muted
+                                popup.source.audio.muted = !popup.source.audio.muted;
                         }
                     }
 
@@ -187,10 +185,9 @@ PopupWindow {
                         value: popup.source ? popup.source.audio.volume : 0
                         onMoved: {
                             if (popup.source)
-                                popup.source.audio.volume = value
+                                popup.source.audio.volume = value;
                         }
                     }
-
                 }
 
                 // Input devices
@@ -198,26 +195,24 @@ PopupWindow {
                     id: inputDeviceSelect
 
                     selectedNode: popup.source
-                    deviceModel: Pipewire.nodes.values.filter(node =>
-                        node.audio !== null && !node.isSink && !node.isStream
-                    ).map(node => ({
-                        text: node.description.length > 0 ? node.description : node.name,
-                        value: node
-                    }))
+                    deviceModel: Pipewire.nodes.values.filter(node => node.audio !== null && !node.isSink && !node.isStream).map(node => ({
+                                text: node.description.length > 0 ? node.description : node.name,
+                                value: node
+                            }))
 
                     onDeviceSelected: node => {
-                        Pipewire.preferredDefaultAudioSource = node
+                        Pipewire.preferredDefaultAudioSource = node;
                     }
 
                     Connections {
                         target: Pipewire
 
                         function onReadyChanged() {
-                            inputDeviceSelect.syncCurrentDevice()
+                            inputDeviceSelect.syncCurrentDevice();
                         }
 
                         function onDefaultAudioSourceChanged() {
-                            inputDeviceSelect.syncCurrentDevice()
+                            inputDeviceSelect.syncCurrentDevice();
                         }
                     }
                 }

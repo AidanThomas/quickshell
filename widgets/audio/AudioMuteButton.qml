@@ -1,6 +1,6 @@
 import qs.config
+
 import QtQuick
-import QtQuick.Layouts
 
 Rectangle {
     id: root
@@ -10,7 +10,7 @@ Rectangle {
     property string activeIcon: ""
     property string mutedIcon: "󰖁"
 
-    signal toggled()
+    signal toggled
 
     implicitWidth: 28
     implicitHeight: 28
@@ -20,7 +20,7 @@ Rectangle {
 
     Text {
         anchors.centerIn: parent
-        text: root.muted ? mutedIcon : activeIcon
+        text: root.muted ? root.mutedIcon : root.activeIcon
         color: Theme.text
     }
 

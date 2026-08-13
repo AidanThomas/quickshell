@@ -1,4 +1,5 @@
 import qs.config
+
 import QtQuick
 import Quickshell
 
@@ -43,10 +44,7 @@ PopupWindow {
 
             Column {
                 id: playerDetails
-                width: popupContent.width
-                    - albumArt.width
-                    - volumeControl.width
-                    - popupContent.spacing * 2
+                width: popupContent.width - albumArt.width - volumeControl.width - popupContent.spacing * 2
 
                 anchors.top: parent.top
                 spacing: 8

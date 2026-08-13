@@ -1,8 +1,9 @@
 import QtQuick
 import Quickshell
 
-
 PanelWindow {
+    id: root
+
     enum Corner {
         TopLeft = 0,
         TopRight = 1,
@@ -30,7 +31,7 @@ PanelWindow {
 
     margins {
         left: corner === 0 || corner === 2 ? frameThickness : 0
-        right : corner === 1 || corner === 3 ? frameThickness : 0
+        right: corner === 1 || corner === 3 ? frameThickness : 0
         bottom: corner === 2 || corner === 3 ? frameThickness : 0
     }
 
@@ -40,38 +41,38 @@ PanelWindow {
 
         onPaint: {
             const ctx = getContext("2d");
-            const r = radius;
+            const r = root.radius;
 
             ctx.reset();
             ctx.clearRect(0, 0, width, height);
 
-            ctx.fillStyle = fillColor;
+            ctx.fillStyle = root.fillColor;
             ctx.fillRect(0, 0, r, r);
 
             ctx.globalCompositeOperation = "destination-out";
             ctx.beginPath();
 
-            switch (corner) {
-                case 0: // TopLeft
-                    ctx.moveTo(r, r);
-                    ctx.lineTo(0, r);
-                    ctx.arc(r, r, r, Math.PI, 1.5 * Math.PI, false);
-                    break;
-                case 1: // TopRight
-                    ctx.moveTo(0, r);
-                    ctx.lineTo(0, 0);
-                    ctx.arc(0, r, r, -Math.PI / 2, 0, false);
-                    break;
-                case 2: // BottomLeft
-                    ctx.moveTo(r, 0);
-                    ctx.lineTo(0, 0);
-                    ctx.arc(r, 0, r, Math.PI, Math.PI / 2, true);
-                    break;
-                case 3: // BottomRight
-                    ctx.moveTo(0, 0);
-                    ctx.lineTo(r, 0);
-                    ctx.arc(0, 0, r, 0, Math.PI / 2, false);
-                    break;
+            switch (root.corner) {
+            case 0: // TopLeft
+                ctx.moveTo(r, r);
+                ctx.lineTo(0, r);
+                ctx.arc(r, r, r, Math.PI, 1.5 * Math.PI, false);
+                break;
+            case 1: // TopRight
+                ctx.moveTo(0, r);
+                ctx.lineTo(0, 0);
+                ctx.arc(0, r, r, -Math.PI / 2, 0, false);
+                break;
+            case 2: // BottomLeft
+                ctx.moveTo(r, 0);
+                ctx.lineTo(0, 0);
+                ctx.arc(r, 0, r, Math.PI, Math.PI / 2, true);
+                break;
+            case 3: // BottomRight
+                ctx.moveTo(0, 0);
+                ctx.lineTo(r, 0);
+                ctx.arc(0, 0, r, 0, Math.PI / 2, false);
+                break;
             }
 
             ctx.closePath();

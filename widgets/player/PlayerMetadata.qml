@@ -1,6 +1,5 @@
 import qs.config
 import QtQuick
-import Quickshell
 
 Column {
     id: root

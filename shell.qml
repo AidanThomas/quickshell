@@ -8,8 +8,8 @@ ShellRoot {
     id: root
 
     property color frameColor: Theme.background
-    property int cornerRadius: 10 
-    property int frameThickness: 5 
+    property int cornerRadius: 10
+    property int frameThickness: 5
     property int topBarHeight: 40
 
     Frame {

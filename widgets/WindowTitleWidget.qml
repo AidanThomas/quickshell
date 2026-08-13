@@ -1,14 +1,18 @@
 import qs.config
+
 import QtQuick
 import Quickshell.Hyprland
 
 Item {
-    property var activeWindow: {
-        const ws = Hyprland.focusedWorkspace
-        if (!ws) return null
+    id: root
 
-        const wins = ws.toplevels.values || []
-        return wins.find(w => w.activated) || null
+    property var activeWindow: {
+        const ws = Hyprland.focusedWorkspace;
+        if (!ws)
+            return null;
+
+        const wins = ws.toplevels.values || [];
+        return wins.find(w => w.activated) || null;
     }
 
     implicitWidth: titleText.implicitWidth
@@ -21,6 +25,6 @@ Item {
         elide: Text.ElideRight
         maximumLineCount: 1
 
-        text: activeWindow?.title || "Desktop"
+        text: root.activeWindow?.title || "Desktop"
     }
 }

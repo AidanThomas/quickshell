@@ -1,4 +1,5 @@
 import qs.config
+
 import QtQuick
 import Quickshell.Hyprland
 
@@ -16,6 +17,8 @@ Rectangle {
             model: 5
 
             Text {
+                id: label
+                required property int index
                 property var ws: Hyprland.workspaces.values.find(w => w.id === index + 1)
                 property bool isActive: Hyprland.focusedWorkspace?.id === (index + 1)
                 text: index + 1
@@ -25,7 +28,7 @@ Rectangle {
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: Hyprland.dispatch("workspace " + (index + 1))
+                    onClicked: Hyprland.dispatch("workspace " + (label.index + 1))
                 }
             }
         }

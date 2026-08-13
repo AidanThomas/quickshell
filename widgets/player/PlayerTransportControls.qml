@@ -1,4 +1,5 @@
 import qs.config
+
 import QtQuick
 
 Row {

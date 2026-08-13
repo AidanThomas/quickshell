@@ -1,6 +1,6 @@
 import qs.config
+
 import QtQuick
-import Quickshell
 
 Column {
     id: root
@@ -32,7 +32,7 @@ Column {
             return;
 
         const fraction = Math.max(0, Math.min(1, x / progressBar.width));
-        const position = fraction * root.player.length
+        const position = fraction * root.player.length;
 
         root.player.position = position;
         root.currentPosition = position;
@@ -100,12 +100,10 @@ Column {
             MouseArea {
                 id: progressMouseArea
                 anchors.fill: parent
-                enabled: root.player?.canSeek
-                    && root.player?.positionSupported
-                    && root.player?.lengthSupported
+                enabled: root.player?.canSeek && root.player?.positionSupported && root.player?.lengthSupported
                 hoverEnabled: true
 
-                onPressed: mouse => { 
+                onPressed: mouse => {
                     root.seekTo(mouse.x);
                 }
 

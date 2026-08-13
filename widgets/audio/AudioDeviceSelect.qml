@@ -1,8 +1,10 @@
+pragma ComponentBehavior: Bound
+
 import qs.config
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Quickshell
 import Quickshell.Services.Pipewire
 
 ComboBox {
@@ -23,9 +25,8 @@ ComboBox {
 
     function syncCurrentDevice() {
         if (!Pipewire.ready || !root.selectedNode)
-            return
-
-        root.currentIndex = indexOfValue(root.selectedNode)
+            return;
+        root.currentIndex = indexOfValue(root.selectedNode);
     }
 
     Component.onCompleted: syncCurrentDevice()
@@ -77,13 +78,13 @@ ComboBox {
                 implicitHeight: 8
                 radius: 4
 
-                color: model.value === root.currentValue ? Theme.text : "transparent"
+                color: deviceDelegate.model.value === root.currentValue ? Theme.text : "transparent"
             }
 
             Text {
                 Layout.fillWidth: true
 
-                text: model.text
+                text: deviceDelegate.model.text
                 color: Theme.text
 
                 verticalAlignment: Text.AlignVCenter

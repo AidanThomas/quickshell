@@ -1,4 +1,7 @@
+pragma ComponentBehavior: Bound
+
 import qs.config
+
 import QtQuick
 import Quickshell.Io
 
@@ -15,7 +18,9 @@ Item {
 
     Component.onCompleted: {
         for (let i = 0; i < root.barCount; i++) {
-            levels.append({ "level": 0 })
+            levels.append({
+                "level": 0
+            });
         }
     }
 
@@ -26,11 +31,11 @@ Item {
 
         stdout: SplitParser {
             onRead: data => {
-                const values = data.trim().split(";")
+                const values = data.trim().split(";");
 
                 for (let i = 0; i < values.length && i < levels.count; i++) {
-                    const value = Number(values[i])
-                    levels.setProperty(i, "level", value / 100)
+                    const value = Number(values[i]);
+                    levels.setProperty(i, "level", value / 100);
                 }
             }
         }
@@ -62,4 +67,3 @@ Item {
         }
     }
 }
-

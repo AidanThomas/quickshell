@@ -9,53 +9,53 @@ ShellRoot {
     required property int frameThickness
     required property int topBarHeight
 
-    TopBar { 
-        height: topBarHeight
-        color: fillColor
+    TopBar {
+        barHeight: frame.topBarHeight
+        color: frame.fillColor
     }
 
     Edge {
         side: Edge.Left
-        thickness: frameThickness
-        color: fillColor
+        thickness: frame.frameThickness
+        color: frame.fillColor
     }
 
     Edge {
         side: Edge.Right
-        thickness: frameThickness
-        color: fillColor
+        thickness: frame.frameThickness
+        color: frame.fillColor
     }
 
     Edge {
         side: Edge.Bottom
-        thickness: frameThickness
-        color: fillColor
+        thickness: frame.frameThickness
+        color: frame.fillColor
     }
 
     ConcaveCorner {
         corner: ConcaveCorner.TopLeft
-        radius: cornerRadius
+        radius: frame.cornerRadius
         fillColor: frame.fillColor
         frameThickness: frame.frameThickness
     }
 
     ConcaveCorner {
         corner: ConcaveCorner.TopRight
-        radius: cornerRadius
+        radius: frame.cornerRadius
         fillColor: frame.fillColor
         frameThickness: frame.frameThickness
     }
 
     ConcaveCorner {
         corner: ConcaveCorner.BottomLeft
-        radius: cornerRadius
+        radius: frame.cornerRadius
         fillColor: frame.fillColor
         frameThickness: frame.frameThickness
     }
 
     ConcaveCorner {
         corner: ConcaveCorner.BottomRight
-        radius: cornerRadius
+        radius: frame.cornerRadius
         fillColor: frame.fillColor
         frameThickness: frame.frameThickness
     }

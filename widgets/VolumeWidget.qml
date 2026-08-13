@@ -1,7 +1,6 @@
 import qs.config
 import qs.widgets.audio
 import QtQuick
-import QtQuick.Layouts
 import Quickshell.Services.Pipewire
 
 Item {
@@ -45,12 +44,12 @@ Item {
                 id: microphoneIcon
                 text: {
                     if (!root.source)
-                        return ""
+                        return "";
 
                     if (root.source.audio.muted)
-                        return ""
+                        return "";
 
-                    return ""
+                    return "";
                 }
 
                 color: Theme.text
@@ -62,7 +61,7 @@ Item {
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
                     if (root.source)
-                        root.source.audio.muted = !root.source.audio.muted
+                        root.source.audio.muted = !root.source.audio.muted;
                 }
             }
         }
@@ -79,10 +78,10 @@ Item {
                     id: speakerIcon
                     text: {
                         if (!root.sink)
-                            return ""
+                            return "";
                         if (root.sink.audio.muted)
-                            return "󰖁"
-                        return ""
+                            return "󰖁";
+                        return "";
                     }
                     color: Theme.text
                 }
@@ -100,18 +99,17 @@ Item {
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
                     if (root.sink)
-                        root.sink.audio.muted = !root.sink.audio.muted
+                        root.sink.audio.muted = !root.sink.audio.muted;
                 }
 
                 onWheel: wheel => {
                     if (!root.sink)
-                        return
-
-                    const step = 0.02
-                    if (wheel.angleDelta.y > 0)  {
-                        root.sink.audio.volume = Math.min(1, root.sink.audio.volume + step)
+                        return;
+                    const step = 0.02;
+                    if (wheel.angleDelta.y > 0) {
+                        root.sink.audio.volume = Math.min(1, root.sink.audio.volume + step);
                     } else if (wheel.angleDelta.y < 0) {
-                        root.sink.audio.volume = Math.max(0, root.sink.audio.volume - step)
+                        root.sink.audio.volume = Math.max(0, root.sink.audio.volume - step);
                     }
                 }
             }
