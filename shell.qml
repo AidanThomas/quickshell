@@ -7,15 +7,22 @@ import Quickshell
 ShellRoot {
     id: root
 
-    property color frameColor: Theme.background
-    property int cornerRadius: 10
-    property int frameThickness: 5
-    property int topBarHeight: 40
+    TopBar {
+        barHeight: 40
+        color: Theme.background
+    }
 
-    Frame {
-        cornerRadius: root.cornerRadius
-        fillColor: root.frameColor
-        frameThickness: root.frameThickness
-        topBarHeight: root.topBarHeight
+    ConcaveCorner {
+        corner: ConcaveCorner.TopLeft
+        radius: 10
+        fillColor: Theme.background
+        frameThickness: 0
+    }
+
+    ConcaveCorner {
+        corner: ConcaveCorner.TopRight
+        radius: 10
+        fillColor: Theme.background
+        frameThickness: 0
     }
 }
