@@ -24,7 +24,6 @@ PanelWindow {
         anchors.rightMargin: 14
         spacing: 10
 
-        PowerWidget {}
         WorkspacesWidget {}
         AudioVisualizerWidget {}
 
