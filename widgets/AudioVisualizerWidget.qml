@@ -29,6 +29,10 @@ Item {
         running: true
         command: ["cava", "-p", "/home/aidant/.config/quickshell/config/cava.conf"]
 
+        // Quickshell can start before PipeWire is ready. Cava exits when that
+        // happens, so retry instead of leaving the visualizer permanently idle.
+        onExited: cavaRestartTimer.restart()
+
         stdout: SplitParser {
             onRead: data => {
                 const values = data.trim().split(";");
@@ -39,6 +43,12 @@ Item {
                 }
             }
         }
+    }
+
+    Timer {
+        id: cavaRestartTimer
+        interval: 2000
+        onTriggered: cava.running = true
     }
 
     Row {
