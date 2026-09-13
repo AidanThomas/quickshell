@@ -101,6 +101,7 @@ PanelWindow {
                 width: parent.width
 
                 Text {
+                    font.family: Theme.fontFamily
                     id: notificationsTitle
                     text: "Notifications"
                     color: Theme.text
@@ -112,6 +113,7 @@ PanelWindow {
                 }
 
                 Text {
+                    font.family: Theme.fontFamily
                     id: clearAll
                     text: "Clear all"
                     color: Theme.textMuted
@@ -125,6 +127,7 @@ PanelWindow {
                 }
 
                 Text {
+                    font.family: Theme.fontFamily
                     id: doNotDisturbToggle
                     text: root.doNotDisturb ? "DND: On" : "DND: Off"
                     color: Theme.textMuted

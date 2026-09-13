@@ -16,6 +16,7 @@ Column {
         width: parent.width
 
         Text {
+            font.family: Theme.fontFamily
             id: appName
             text: root.notification.appName
             color: Theme.textMuted
@@ -27,6 +28,7 @@ Column {
         }
 
         Text {
+            font.family: Theme.fontFamily
             id: notificationTime
             visible: root.showTimestamp
             text: root.timestamp
@@ -35,11 +37,13 @@ Column {
     }
 
     Text {
+        font.family: Theme.fontFamily
         text: root.notification.summary
         color: Theme.text
     }
 
     Text {
+        font.family: Theme.fontFamily
         width: parent.width
         text: root.notification.body
         color: Theme.textMuted

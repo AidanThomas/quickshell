@@ -61,6 +61,7 @@ PopupWindow {
                     Layout.fillWidth: true
 
                     Text {
+                        font.family: Theme.fontFamily
                         text: "OUTPUT"
                         color: Theme.textMuted
 
@@ -75,6 +76,7 @@ PopupWindow {
                     }
 
                     Text {
+                        font.family: Theme.fontFamily
                         text: popup.sink ? Math.round(popup.sink.audio.volume * 100) + "%" : "--%"
                         color: Theme.textMuted
                         font.pixelSize: 11
@@ -146,6 +148,7 @@ PopupWindow {
                     Layout.fillWidth: true
 
                     Text {
+                        font.family: Theme.fontFamily
                         text: "INPUT"
                         color: Theme.textMuted
 
@@ -160,6 +163,7 @@ PopupWindow {
                     }
 
                     Text {
+                        font.family: Theme.fontFamily
                         text: popup.source ? Math.round(popup.source.audio.volume * 100) + "%" : "--%"
                         color: Theme.textMuted
                         font.pixelSize: 11
@@ -229,6 +233,7 @@ PopupWindow {
                 spacing: 6
 
                 Text {
+                    font.family: Theme.fontFamily
                     text: "APPLICATIONS"
                     color: Theme.textMuted
 

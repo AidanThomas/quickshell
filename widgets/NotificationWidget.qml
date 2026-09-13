@@ -93,11 +93,13 @@ Item {
         spacing: 4
 
         Text {
+            font.family: Theme.fontFamily
             text: root.doNotDisturb ? "󰂛" : "󰂚"
             color: Theme.text
         }
 
         Text {
+            font.family: Theme.fontFamily
             visible: root.unreadCount > 0
             text: root.unreadCount
             color: Theme.text

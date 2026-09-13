@@ -119,6 +119,7 @@ Column {
             height: timeLeft.implicitHeight
 
             Text {
+                font.family: Theme.fontFamily
                 id: timeLeft
                 anchors.left: parent.left
                 text: root.formatTime(root.currentPosition)
@@ -127,6 +128,7 @@ Column {
             }
 
             Text {
+                font.family: Theme.fontFamily
                 anchors.right: parent.right
                 text: root.formatTime(root.player?.length ?? 0)
                 color: Theme.text

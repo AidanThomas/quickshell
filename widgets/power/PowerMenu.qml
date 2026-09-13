@@ -41,6 +41,7 @@ PanelWindow {
         border.color: Theme.border
 
         Text {
+            font.family: Theme.fontFamily
             anchors.centerIn: parent
             text: "Power Menu"
             color: Theme.text

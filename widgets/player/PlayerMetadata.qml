@@ -9,6 +9,7 @@ Column {
     spacing: 4
 
     Text {
+        font.family: Theme.fontFamily
         width: parent.width
         text: root.player?.trackTitle ?? ""
         color: Theme.text
@@ -17,6 +18,7 @@ Column {
     }
 
     Text {
+        font.family: Theme.fontFamily
         width: parent.width
         text: root.player?.trackArtist ?? ""
         color: Theme.text
@@ -25,6 +27,7 @@ Column {
     }
 
     Text {
+        font.family: Theme.fontFamily
         width: parent.width
         text: root.player?.trackAlbum ?? ""
         color: Theme.text

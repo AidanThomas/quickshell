@@ -19,6 +19,7 @@ Rectangle {
     color: mouseArea.containsMouse ? Theme.surfaceHover : "transparent"
 
     Text {
+        font.family: Theme.fontFamily
         anchors.centerIn: parent
         text: root.muted ? root.mutedIcon : root.activeIcon
         color: Theme.text

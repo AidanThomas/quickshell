@@ -10,6 +10,7 @@ Item {
     implicitHeight: icon.implicitHeight
 
     Text {
+        font.family: Theme.fontFamily
         id: icon
         text: ""
         color: Theme.text

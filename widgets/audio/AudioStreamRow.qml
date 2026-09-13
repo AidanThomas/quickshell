@@ -21,6 +21,7 @@ Item {
         spacing: 8
 
         Text {
+            font.family: Theme.fontFamily
             Layout.preferredWidth: 110
             text: root.node.description.length > 0 ? root.node.description : root.node.name
             color: Theme.text
@@ -42,6 +43,7 @@ Item {
         }
 
         Text {
+            font.family: Theme.fontFamily
             text: Math.round(root.node.audio.volume * 100) + "%"
             color: Theme.textMuted
         }

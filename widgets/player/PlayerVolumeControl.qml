@@ -74,6 +74,7 @@ Item {
     }
 
     Text {
+        font.family: Theme.fontFamily
         id: volumeIcon
 
         anchors {

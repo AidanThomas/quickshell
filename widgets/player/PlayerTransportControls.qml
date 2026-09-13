@@ -17,6 +17,7 @@ Row {
         color: previousMouse.containsMouse ? Theme.surfaceHover : "transparent"
 
         Text {
+            font.family: Theme.fontFamily
             anchors.centerIn: parent
             text: "󰒮"
             color: Theme.text
@@ -40,6 +41,7 @@ Row {
         color: playPauseMouse.containsMouse ? Theme.surfaceHover : "transparent"
 
         Text {
+            font.family: Theme.fontFamily
             anchors.centerIn: parent
             text: root.player?.isPlaying ? "󰏤" : "󰐊"
             color: Theme.text
@@ -63,6 +65,7 @@ Row {
         color: nextMouse.containsMouse ? Theme.surfaceHover : "transparent"
 
         Text {
+            font.family: Theme.fontFamily
             anchors.centerIn: parent
             text: "󰒭"
             color: Theme.text

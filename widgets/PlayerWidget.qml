@@ -15,6 +15,7 @@ Item {
     readonly property bool hasPlayer: root.player !== undefined
 
     Text {
+        font.family: Theme.fontFamily
         id: content
 
         text: `${root.player?.trackArtist ?? "Unknown"} - ${root.player?.trackTitle ?? "Unknown"}`

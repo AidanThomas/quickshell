@@ -4,6 +4,8 @@ import QtQuick
 import Quickshell
 
 Singleton {
+    readonly property string fontFamily: "RobotoMono Nerd Font"
+
     readonly property color background: "#1e1e2e"
 
     readonly property color surface: "#202020"

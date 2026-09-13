@@ -32,6 +32,7 @@ ComboBox {
     Component.onCompleted: syncCurrentDevice()
 
     contentItem: Text {
+        font.family: Theme.fontFamily
         leftPadding: 10
         rightPadding: 28
 
@@ -43,6 +44,7 @@ ComboBox {
     }
 
     indicator: Text {
+        font.family: Theme.fontFamily
         text: "▾"
         color: Theme.textMuted
 
@@ -82,6 +84,7 @@ ComboBox {
             }
 
             Text {
+                font.family: Theme.fontFamily
                 Layout.fillWidth: true
 
                 text: deviceDelegate.model.text

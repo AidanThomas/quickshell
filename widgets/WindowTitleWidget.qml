@@ -19,6 +19,7 @@ Item {
     implicitHeight: titleText.implicitHeight
 
     Text {
+        font.family: Theme.fontFamily
         id: titleText
         anchors.centerIn: parent
         color: Theme.text

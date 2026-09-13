@@ -41,6 +41,7 @@ Item {
             implicitHeight: microphoneIcon.implicitHeight
 
             Text {
+                font.family: Theme.fontFamily
                 id: microphoneIcon
                 text: {
                     if (!root.source)
@@ -75,6 +76,7 @@ Item {
                 spacing: 6
 
                 Text {
+                    font.family: Theme.fontFamily
                     id: speakerIcon
                     text: {
                         if (!root.sink)
@@ -87,6 +89,7 @@ Item {
                 }
 
                 Text {
+                    font.family: Theme.fontFamily
                     id: speakerVolume
                     text: root.sink ? Math.round(root.sink.audio.volume * 100) + "%" : "--%"
                     color: Theme.text

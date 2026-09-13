@@ -66,6 +66,7 @@ Rectangle {
             z: 1
 
             Text {
+                font.family: Theme.fontFamily
                 anchors.centerIn: parent
                 text: "󰅖"
                 color: Theme.textMuted
