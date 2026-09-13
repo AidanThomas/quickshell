@@ -61,7 +61,9 @@ Rectangle {
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: Hyprland.dispatch("workspace " + (workspaceIndicator.index + 1))
+                    acceptedButtons: Qt.LeftButton
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: Hyprland.dispatch("hl.dsp.focus({ workspace = \"" + (workspaceIndicator.index + 1) + "\" })")
                 }
             }
         }
