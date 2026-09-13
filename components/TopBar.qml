@@ -1,4 +1,5 @@
 import qs.widgets
+
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
@@ -23,6 +24,7 @@ PanelWindow {
         anchors.rightMargin: 14
         spacing: 10
 
+        PowerWidget {}
         WorkspacesWidget {}
         AudioVisualizerWidget {}
 
