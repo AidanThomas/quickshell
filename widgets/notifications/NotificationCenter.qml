@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import qs.config
+import qs.components
 
 import QtQuick
 import Quickshell
@@ -75,24 +76,24 @@ PanelWindow {
         }
     }
 
-    Rectangle {
+    PopupSurface {
         id: notificationCenter
         width: parent.width
         height: parent.height
         x: root.open ? 0 : root.width
-        color: Theme.surface
+        padding: 16
+        accentColor: root.doNotDisturb ? Theme.accentBlue : Theme.accentCyan
 
         Behavior on x {
             NumberAnimation {
-                duration: 200
-                easing.type: Easing.OutCubic
+                duration: Theme.animationState
+                easing.type: Theme.easingEntrance
             }
         }
 
         Column {
             anchors {
                 fill: parent
-                margins: 16
             }
 
             spacing: 12
@@ -103,8 +104,11 @@ PanelWindow {
                 Text {
                     font.family: Theme.fontFamily
                     id: notificationsTitle
-                    text: "Notifications"
-                    color: Theme.text
+                    text: "NOTIFICATIONS"
+                    color: Theme.textPrimary
+                    font.pixelSize: 13
+                    font.weight: Font.DemiBold
+                    font.letterSpacing: 0.8
                 }
 
                 Item {
@@ -115,12 +119,15 @@ PanelWindow {
                 Text {
                     font.family: Theme.fontFamily
                     id: clearAll
-                    text: "Clear all"
-                    color: Theme.textMuted
+                    text: "CLEAR"
+                    color: clearAllMouse.containsMouse ? Theme.accentAmber : Theme.textMuted
+                    font.pixelSize: 10
                     visible: root.notificationServer.trackedNotifications.values.length > 0
 
                     MouseArea {
+                        id: clearAllMouse
                         anchors.fill: parent
+                        hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
                         onClicked: root.clearNotifications()
                     }
@@ -129,8 +136,9 @@ PanelWindow {
                 Text {
                     font.family: Theme.fontFamily
                     id: doNotDisturbToggle
-                    text: root.doNotDisturb ? "DND: On" : "DND: Off"
-                    color: Theme.textMuted
+                    text: root.doNotDisturb ? "DND ON" : "DND OFF"
+                    color: root.doNotDisturb ? Theme.accentBlue : Theme.textMuted
+                    font.pixelSize: 10
 
                     MouseArea {
                         anchors.fill: parent
@@ -143,7 +151,7 @@ PanelWindow {
             ListView {
                 width: parent.width
                 height: parent.height - y
-                spacing: 5
+                spacing: 8
                 clip: true
                 model: root.notificationServer.trackedNotifications
 

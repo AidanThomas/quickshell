@@ -11,11 +11,15 @@ import Quickshell.Services.Notifications
 Item {
     id: root
     implicitWidth: content.implicitWidth
-    implicitHeight: content.implicitHeight
+    implicitHeight: Math.max(24, content.implicitHeight)
 
     property bool doNotDisturb: false
     property int unreadCount: 0
     property var notificationTimeStamps: []
+    readonly property bool popupOpen: notificationCenter.open
+    // NotificationUrgency.Critical is enum value 2 in the installed API, but
+    // its singleton is not exposed to expressions by this Quickshell build.
+    readonly property bool hasUrgent: notificationServer.trackedNotifications.values.some(notification => notification.urgency === 2)
 
     function removeToast(notification) {
         for (let i = 0; i < toastModel.count; i++) {
@@ -90,19 +94,31 @@ Item {
 
     RowLayout {
         id: content
+        anchors.centerIn: parent
         spacing: 4
 
         Text {
-            font.family: Theme.fontFamily
+            font.family: Theme.iconFontFamily
             text: root.doNotDisturb ? "󰂛" : "󰂚"
-            color: Theme.text
+            color: root.hasUrgent
+                ? Theme.accentRed
+                : (root.unreadCount > 0 ? Theme.accentAmber : (root.doNotDisturb ? Theme.textMuted : Theme.textPrimary))
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: Theme.animationState
+                    easing.type: Theme.easingStandard
+                }
+            }
         }
 
         Text {
             font.family: Theme.fontFamily
             visible: root.unreadCount > 0
-            text: root.unreadCount
-            color: Theme.text
+            text: root.unreadCount > 99 ? "99+" : root.unreadCount
+            color: root.hasUrgent ? Theme.accentRed : Theme.accentAmber
+            font.pixelSize: root.unreadCount > 99 ? 9 : 11
+            font.weight: Font.DemiBold
         }
     }
 

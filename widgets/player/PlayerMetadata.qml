@@ -12,8 +12,9 @@ Column {
         font.family: Theme.fontFamily
         width: parent.width
         text: root.player?.trackTitle ?? ""
-        color: Theme.text
-        font.bold: true
+        color: Theme.textPrimary
+        font.pixelSize: 13
+        font.weight: Font.DemiBold
         elide: Text.ElideRight
     }
 
@@ -21,8 +22,8 @@ Column {
         font.family: Theme.fontFamily
         width: parent.width
         text: root.player?.trackArtist ?? ""
-        color: Theme.text
-        opacity: 0.8
+        color: Theme.textMuted
+        font.pixelSize: 10
         elide: Text.ElideRight
     }
 
@@ -30,8 +31,8 @@ Column {
         font.family: Theme.fontFamily
         width: parent.width
         text: root.player?.trackAlbum ?? ""
-        color: Theme.text
-        opacity: 0.5
+        color: Theme.accentBlue
+        font.pixelSize: 9
         elide: Text.ElideRight
     }
 }

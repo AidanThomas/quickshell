@@ -23,28 +23,30 @@ Item {
         Text {
             font.family: Theme.fontFamily
             Layout.preferredWidth: 110
-            text: root.node.description.length > 0 ? root.node.description : root.node.name
-            color: Theme.text
+            text: (root.node?.description?.length ?? 0) > 0 ? root.node.description : (root.node?.name ?? "Unknown stream")
+            color: Theme.textPrimary
             elide: Text.ElideRight
         }
 
         AudioMuteButton {
-            muted: root.node.audio.muted
+            muted: root.node?.audio?.muted ?? true
             onToggled: {
-                root.node.audio.muted = !root.node.audio.muted;
+                if (root.node?.audio)
+                    root.node.audio.muted = !root.node.audio.muted;
             }
         }
 
         AudioSlider {
-            value: root.node.audio.volume
+            value: root.node?.audio?.volume ?? 0
             onMoved: {
-                root.node.audio.volume = value;
+                if (root.node?.audio)
+                    root.node.audio.volume = value;
             }
         }
 
         Text {
             font.family: Theme.fontFamily
-            text: Math.round(root.node.audio.volume * 100) + "%"
+            text: root.node?.audio ? Math.round(root.node.audio.volume * 100) + "%" : "--%"
             color: Theme.textMuted
         }
     }

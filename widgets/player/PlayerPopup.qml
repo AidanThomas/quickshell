@@ -1,4 +1,5 @@
 import qs.config
+import qs.components
 
 import QtQuick
 import Quickshell
@@ -23,17 +24,14 @@ PopupWindow {
 
     color: "transparent"
 
-    Rectangle {
+    PopupSurface {
         anchors.fill: parent
-        color: Theme.background
-        radius: 8
+        padding: 16
 
         Row {
             id: popupContent
 
             anchors.fill: parent
-            anchors.margins: 16
-
             spacing: root.popupSpacing
 
             PlayerAlbumArt {

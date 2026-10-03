@@ -1,4 +1,5 @@
 import qs.config
+import qs.components
 
 import QtQuick
 import QtQuick.Layouts
@@ -29,14 +30,9 @@ PopupWindow {
         objects: [popup.sink, popup.source]
     }
 
-    Rectangle {
+    PopupSurface {
         anchors.fill: parent
-
-        topLeftRadius: 4
-        topRightRadius: 4
-        bottomLeftRadius: 12
-        bottomRightRadius: 12
-        color: Theme.surface
+        padding: 14
 
         ColumnLayout {
             id: content
@@ -45,9 +41,7 @@ PopupWindow {
                 top: parent.top
                 left: parent.left
                 right: parent.right
-                leftMargin: 14
-                rightMargin: 14
-                topMargin: 12
+                bottom: parent.bottom
             }
 
             spacing: 10
@@ -63,7 +57,7 @@ PopupWindow {
                     Text {
                         font.family: Theme.fontFamily
                         text: "OUTPUT"
-                        color: Theme.textMuted
+                        color: Theme.accentCyan
 
                         font {
                             pixelSize: 11
@@ -77,8 +71,8 @@ PopupWindow {
 
                     Text {
                         font.family: Theme.fontFamily
-                        text: popup.sink ? Math.round(popup.sink.audio.volume * 100) + "%" : "--%"
-                        color: Theme.textMuted
+                        text: popup.sink?.audio ? Math.round(popup.sink.audio.volume * 100) + "%" : "--%"
+                        color: popup.sink?.audio.muted ? Theme.accentAmber : Theme.textMuted
                         font.pixelSize: 11
                     }
                 }
@@ -89,17 +83,17 @@ PopupWindow {
                     spacing: 10
 
                     AudioMuteButton {
-                        muted: popup.sink ? popup.sink.audio.muted : true
+                        muted: popup.sink?.audio?.muted ?? true
                         onToggled: {
-                            if (popup.sink)
+                            if (popup.sink?.audio)
                                 popup.sink.audio.muted = !popup.sink.audio.muted;
                         }
                     }
 
                     AudioSlider {
-                        value: popup.sink ? popup.sink.audio.volume : 0
+                        value: popup.sink?.audio?.volume ?? 0
                         onMoved: {
-                            if (popup.sink)
+                            if (popup.sink?.audio)
                                 popup.sink.audio.volume = value;
                         }
                     }
@@ -136,7 +130,7 @@ PopupWindow {
             Rectangle {
                 Layout.fillWidth: true
                 implicitHeight: 1
-                color: Theme.border
+                color: Theme.borderSubtle
             }
 
             ColumnLayout {
@@ -150,7 +144,7 @@ PopupWindow {
                     Text {
                         font.family: Theme.fontFamily
                         text: "INPUT"
-                        color: Theme.textMuted
+                        color: Theme.accentBlue
 
                         font {
                             pixelSize: 11
@@ -164,8 +158,8 @@ PopupWindow {
 
                     Text {
                         font.family: Theme.fontFamily
-                        text: popup.source ? Math.round(popup.source.audio.volume * 100) + "%" : "--%"
-                        color: Theme.textMuted
+                        text: popup.source?.audio ? Math.round(popup.source.audio.volume * 100) + "%" : "--%"
+                        color: popup.source?.audio.muted ? Theme.accentAmber : Theme.textMuted
                         font.pixelSize: 11
                     }
                 }
@@ -176,19 +170,19 @@ PopupWindow {
                     spacing: 10
 
                     AudioMuteButton {
-                        muted: popup.source ? popup.source.audio.muted : true
+                        muted: popup.source?.audio?.muted ?? true
                         activeIcon: ""
                         mutedIcon: ""
                         onToggled: {
-                            if (popup.source)
+                            if (popup.source?.audio)
                                 popup.source.audio.muted = !popup.source.audio.muted;
                         }
                     }
 
                     AudioSlider {
-                        value: popup.source ? popup.source.audio.volume : 0
+                        value: popup.source?.audio?.volume ?? 0
                         onMoved: {
-                            if (popup.source)
+                            if (popup.source?.audio)
                                 popup.source.audio.volume = value;
                         }
                     }
@@ -225,7 +219,7 @@ PopupWindow {
             Rectangle {
                 Layout.fillWidth: true
                 implicitHeight: 1
-                color: Theme.border
+                color: Theme.borderSubtle
             }
 
             ColumnLayout {

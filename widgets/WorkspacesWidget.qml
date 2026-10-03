@@ -26,6 +26,7 @@ Rectangle {
     readonly property int indicatorSize: 14
     readonly property int indicatorSlotWidth: 16
     readonly property int indicatorSpacing: 4
+    readonly property bool moving: movementAnimation.running
 
     implicitHeight: workspacesRow.implicitHeight
     implicitWidth: workspacesRow.implicitWidth
@@ -55,8 +56,8 @@ Rectangle {
                     height: root.indicatorSize
                     radius: width / 2
                     color: "transparent"
-                    border.width: 1
-                    border.color: workspaceIndicator.isActive ? Theme.workspaceActive : (workspaceIndicator.isOccupied ? Theme.workspaceOccupied : Theme.workspaceEmpty)
+                    border.width: workspaceIndicator.isOccupied && !workspaceIndicator.isActive ? 1.5 : 1
+                    border.color: workspaceIndicator.isActive ? Theme.accentCyan : (workspaceIndicator.isOccupied ? Theme.accentBlue : Theme.borderSubtle)
                 }
 
                 MouseArea {
@@ -89,7 +90,7 @@ Rectangle {
         radius: height / 2
         x: movementDirection > 0 ? centerPosition - width + height / 2 : centerPosition - height / 2
         anchors.verticalCenter: workspacesRow.verticalCenter
-        color: Theme.workspaceActive
+        color: Theme.accentCyan
 
         Component.onCompleted: {
             centerPosition = root.activeWorkspaceIndex * (root.indicatorSlotWidth + root.indicatorSpacing) + root.indicatorSlotWidth / 2;
@@ -110,15 +111,15 @@ Rectangle {
 
             NumberAnimation {
                 id: movementAnimation
-                duration: 150
-                easing.type: Easing.InOutSine
+                duration: Theme.animationPosition
+                easing.type: Theme.easingStandard
             }
         }
 
         Behavior on width {
             NumberAnimation {
-                duration: 140
-                easing.type: Easing.InOutSine
+                duration: Theme.animationHover
+                easing.type: Theme.easingStandard
             }
         }
     }

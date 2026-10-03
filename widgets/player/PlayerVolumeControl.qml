@@ -28,7 +28,7 @@ Item {
         from: 0.0
         to: 1.0
         value: root.player?.volume ?? 1.0
-        enabled: root.player?.canControl && root.player?.volumeSupported
+        enabled: (root.player?.canControl ?? false) && (root.player?.volumeSupported ?? false)
         onMoved: {
             root.player.volume = value;
             if (value > 0)
@@ -41,7 +41,7 @@ Item {
             width: 4
             height: volumeSlider.availableHeight
             radius: 2
-            color: Theme.surface
+            color: Theme.borderSubtle
 
             Rectangle {
                 anchors {
@@ -52,7 +52,7 @@ Item {
 
                 height: parent.height * volumeSlider.position
                 radius: parent.radius
-                color: Theme.text
+                color: Theme.accentCyan
             }
         }
 
@@ -62,19 +62,20 @@ Item {
             width: 10
             height: 10
             radius: width / 2
-            color: Theme.text
+            color: Theme.accentCyan
             opacity: volumeSlider.hovered || volumeSlider.pressed ? 1 : 0
 
             Behavior on opacity {
                 NumberAnimation {
-                    duration: 100
+                    duration: Theme.animationHover
+                    easing.type: Theme.easingStandard
                 }
             }
         }
     }
 
     Text {
-        font.family: Theme.fontFamily
+        font.family: Theme.iconFontFamily
         id: volumeIcon
 
         anchors {
@@ -94,11 +95,11 @@ Item {
             return "󰕾";
         }
 
-        color: Theme.text
-        opacity: 0.7
+        color: (root.player?.volume ?? 0) === 0 ? Theme.accentAmber : Theme.textMuted
 
         MouseArea {
             anchors.fill: parent
+            cursorShape: Qt.PointingHandCursor
             onClicked: {
                 if (!root.player)
                     return;

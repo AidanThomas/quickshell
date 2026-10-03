@@ -7,10 +7,13 @@ Item {
     id: root
 
     implicitWidth: content.implicitWidth
-    implicitHeight: content.implicitHeight
+    implicitHeight: Math.max(24, content.implicitHeight)
 
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property var source: Pipewire.defaultAudioSource
+    readonly property bool popupOpen: popup.visible
+    readonly property bool inputMuted: root.source?.audio.muted ?? false
+    readonly property bool outputMuted: root.sink?.audio.muted ?? false
 
     PwObjectTracker {
         objects: [root.sink, root.source]
@@ -33,27 +36,35 @@ Item {
 
     Row {
         id: content
-
+        anchors.centerIn: parent
         spacing: 10
 
         Item {
-            implicitWidth: microphoneIcon.implicitWidth
-            implicitHeight: microphoneIcon.implicitHeight
+            implicitWidth: Math.max(24, microphoneIcon.implicitWidth)
+            implicitHeight: 24
 
             Text {
-                font.family: Theme.fontFamily
+                font.family: Theme.iconFontFamily
                 id: microphoneIcon
+                anchors.centerIn: parent
                 text: {
                     if (!root.source)
                         return "";
 
-                    if (root.source.audio.muted)
+                    if (root.source.audio?.muted)
                         return "";
 
                     return "";
                 }
 
-                color: Theme.text
+                color: root.inputMuted ? Theme.accentAmber : Theme.textMuted
+
+                Behavior on color {
+                    ColorAnimation {
+                        duration: Theme.animationState
+                        easing.type: Theme.easingStandard
+                    }
+                }
             }
 
             MouseArea {
@@ -61,38 +72,53 @@ Item {
                 acceptedButtons: Qt.RightButton
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
-                    if (root.source)
+                    if (root.source?.audio)
                         root.source.audio.muted = !root.source.audio.muted;
                 }
             }
         }
 
         Item {
-            implicitWidth: speakerContent.implicitWidth
-            implicitHeight: speakerContent.implicitHeight
+            implicitWidth: Math.max(24, speakerContent.implicitWidth)
+            implicitHeight: 24
 
             Row {
                 id: speakerContent
+                anchors.centerIn: parent
                 spacing: 6
 
                 Text {
-                    font.family: Theme.fontFamily
+                    font.family: Theme.iconFontFamily
                     id: speakerIcon
                     text: {
                         if (!root.sink)
                             return "";
-                        if (root.sink.audio.muted)
+                        if (root.sink.audio?.muted)
                             return "󰖁";
                         return "";
                     }
-                    color: Theme.text
+                    color: root.outputMuted ? Theme.accentAmber : Theme.accentCyan
+
+                    Behavior on color {
+                        ColorAnimation {
+                            duration: Theme.animationState
+                            easing.type: Theme.easingStandard
+                        }
+                    }
                 }
 
                 Text {
                     font.family: Theme.fontFamily
                     id: speakerVolume
-                    text: root.sink ? Math.round(root.sink.audio.volume * 100) + "%" : "--%"
-                    color: Theme.text
+                    text: root.sink?.audio ? Math.round(root.sink.audio.volume * 100) + "%" : "--%"
+                    color: root.outputMuted ? Theme.accentAmber : Theme.textPrimary
+
+                    Behavior on color {
+                        ColorAnimation {
+                            duration: Theme.animationState
+                            easing.type: Theme.easingStandard
+                        }
+                    }
                 }
             }
 
@@ -101,12 +127,12 @@ Item {
                 acceptedButtons: Qt.RightButton
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
-                    if (root.sink)
+                    if (root.sink?.audio)
                         root.sink.audio.muted = !root.sink.audio.muted;
                 }
 
                 onWheel: wheel => {
-                    if (!root.sink)
+                    if (!root.sink?.audio)
                         return;
                     const step = 0.02;
                     if (wheel.angleDelta.y > 0) {

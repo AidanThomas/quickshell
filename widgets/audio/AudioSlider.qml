@@ -18,13 +18,13 @@ Slider {
         width: root.availableWidth
         height: 4
         radius: 2
-        color: Theme.border
+        color: Theme.borderSubtle
 
         Rectangle {
             width: root.visualPosition * parent.width
             height: parent.height
             radius: parent.radius
-            color: Theme.text
+            color: Theme.accentCyan
         }
     }
 
@@ -34,6 +34,13 @@ Slider {
         implicitWidth: 12
         implicitHeight: 12
         radius: 6
-        color: Theme.text
+        color: root.pressed || root.hovered ? Theme.textPrimary : Theme.accentCyan
+
+        Behavior on color {
+            ColorAnimation {
+                duration: Theme.animationHover
+                easing.type: Theme.easingStandard
+            }
+        }
     }
 }

@@ -6,15 +6,24 @@ import QtQuick
 Item {
     id: root
 
-    implicitWidth: icon.implicitWidth
-    implicitHeight: icon.implicitHeight
+    implicitWidth: Math.max(24, icon.implicitWidth)
+    implicitHeight: Math.max(24, icon.implicitHeight)
+    readonly property bool menuOpen: powerMenu.visible
 
     Text {
-        font.family: Theme.fontFamily
+        font.family: Theme.iconFontFamily
         id: icon
+        anchors.centerIn: parent
         text: ""
-        color: Theme.text
+        color: root.menuOpen ? Theme.accentRed : Theme.textPrimary
         font.pixelSize: 18
+
+        Behavior on color {
+            ColorAnimation {
+                duration: Theme.animationState
+                easing.type: Theme.easingStandard
+            }
+        }
     }
 
     MouseArea {

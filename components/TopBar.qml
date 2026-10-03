@@ -1,3 +1,4 @@
+import qs.config
 import qs.widgets
 
 import QtQuick
@@ -20,25 +21,66 @@ PanelWindow {
 
     RowLayout {
         anchors.fill: parent
-        anchors.leftMargin: 14
-        anchors.rightMargin: 14
-        spacing: 10
+        anchors.leftMargin: 8
+        anchors.rightMargin: 8
+        spacing: Theme.islandGap
 
-        WorkspacesWidget {}
-        AudioVisualizerWidget {}
+        WidgetIsland {
+            active: workspacesWidget.moving
+
+            WorkspacesWidget { id: workspacesWidget }
+        }
+
+        WidgetIsland {
+            hoverEnabled: false
+            horizontalPadding: 8
+
+            AudioVisualizerWidget {}
+        }
 
         Item {
             Layout.fillWidth: true
         }
 
-        PlayerWidget {}
+        WidgetIsland {
+            visible: playerWidget.hasPlayer
+            active: playerWidget.popupOpen
+
+            PlayerWidget {
+                id: playerWidget
+            }
+        }
 
         Item {
             Layout.fillWidth: true
         }
 
-        NotificationWidget {}
-        VolumeWidget {}
-        ClockWidget {}
+        WidgetIsland {
+            active: notificationWidget.popupOpen
+            attention: notificationWidget.unreadCount > 0
+            critical: notificationWidget.hasUrgent
+            muted: notificationWidget.doNotDisturb
+
+            NotificationWidget {
+                id: notificationWidget
+            }
+        }
+
+        WidgetIsland {
+            active: volumeWidget.popupOpen
+            attention: volumeWidget.inputMuted || volumeWidget.outputMuted
+            fullWidthAccent: volumeWidget.popupOpen
+
+            VolumeWidget {
+                id: volumeWidget
+            }
+        }
+
+        WidgetIsland {
+            hoverEnabled: false
+            horizontalPadding: 9
+
+            ClockWidget {}
+        }
     }
 }

@@ -21,10 +21,8 @@ Column {
     }
 
     Connections {
-        target: root.player
-        function onTrackChanged() {
-            root.currentPosition = root.player?.position ?? 0;
-        }
+        target: root.player ?? null
+        function onPositionChanged() { root.currentPosition = root.player?.position ?? 0; }
     }
 
     function seekTo(x) {
@@ -65,7 +63,7 @@ Column {
                 width: parent.width
                 height: 4
                 radius: 2
-                color: Theme.surface
+                color: Theme.borderSubtle
 
                 Rectangle {
                     id: progress
@@ -77,7 +75,7 @@ Column {
                     }
                     height: parent.height
                     radius: parent.radius
-                    color: Theme.text
+                    color: Theme.accentCyan
                 }
 
                 Rectangle {
@@ -85,13 +83,14 @@ Column {
                     width: 10
                     height: 10
                     radius: width / 2
-                    color: Theme.text
+                    color: Theme.accentCyan
                     opacity: progressMouseArea.containsMouse || progressMouseArea.pressed ? 1 : 0
                     anchors.verticalCenter: parent.verticalCenter
                     x: Math.max(0, Math.min(track.width - width, progress.width - width / 2))
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: 100
+                            duration: Theme.animationHover
+                            easing.type: Theme.easingStandard
                         }
                     }
                 }
@@ -100,8 +99,11 @@ Column {
             MouseArea {
                 id: progressMouseArea
                 anchors.fill: parent
-                enabled: root.player?.canSeek && root.player?.positionSupported && root.player?.lengthSupported
+                enabled: (root.player?.canSeek ?? false)
+                    && (root.player?.positionSupported ?? false)
+                    && (root.player?.lengthSupported ?? false)
                 hoverEnabled: true
+                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
 
                 onPressed: mouse => {
                     root.seekTo(mouse.x);
@@ -123,16 +125,14 @@ Column {
                 id: timeLeft
                 anchors.left: parent.left
                 text: root.formatTime(root.currentPosition)
-                color: Theme.text
-                opacity: 0.6
+                color: Theme.textMuted
             }
 
             Text {
                 font.family: Theme.fontFamily
                 anchors.right: parent.right
                 text: root.formatTime(root.player?.length ?? 0)
-                color: Theme.text
-                opacity: 0.6
+                color: Theme.textMuted
             }
         }
     }

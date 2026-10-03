@@ -1,4 +1,5 @@
 import qs.config
+import qs.components
 
 import Quickshell
 import Quickshell.Io
@@ -33,19 +34,38 @@ PanelWindow {
         }
     }
 
-    Rectangle {
+    PopupSurface {
         anchors.fill: parent
-        radius: 5
-        color: Theme.background
-        border.width: 1
-        border.color: Theme.border
+        accentColor: Theme.accentRed
+        padding: 18
 
-        Text {
-            font.family: Theme.fontFamily
-            anchors.centerIn: parent
-            text: "Power Menu"
-            color: Theme.text
-            font.pixelSize: 18
+        Column {
+            anchors.fill: parent
+            spacing: 10
+
+            Text {
+                font.family: Theme.fontFamily
+                text: "POWER CONTROL"
+                color: Theme.textPrimary
+                font.pixelSize: 14
+                font.weight: Font.DemiBold
+                font.letterSpacing: 1
+            }
+
+            Rectangle {
+                width: parent.width
+                height: 1
+                color: Theme.borderSubtle
+            }
+
+            Text {
+                width: parent.width
+                text: "SYSTEM ACTIONS NOT CONFIGURED"
+                color: Theme.textMuted
+                font.family: Theme.fontFamily
+                font.pixelSize: 10
+                wrapMode: Text.Wrap
+            }
         }
     }
 }

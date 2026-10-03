@@ -15,14 +15,14 @@ Rectangle {
     Row {
         id: clockContent
         anchors.centerIn: parent
-        spacing: 8
+        spacing: 7
 
         Text {
             anchors.verticalCenter: parent.verticalCenter
             text: Qt.formatDateTime(clock.date, "HH:mm")
-            color: Theme.text
+            color: Theme.textPrimary
             font.family: Theme.fontFamily
-            font.pixelSize: 20
+            font.pixelSize: 19
             font.weight: Font.DemiBold
             font.letterSpacing: 0.5
         }
@@ -33,7 +33,7 @@ Rectangle {
 
             Text {
                 text: Qt.formatDateTime(clock.date, "ddd").toUpperCase()
-                color: Theme.workspaceActive
+                color: Theme.accentCyan
                 font.family: Theme.fontFamily
                 font.pixelSize: 9
                 font.weight: Font.Bold

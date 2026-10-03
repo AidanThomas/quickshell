@@ -37,7 +37,7 @@ ComboBox {
         rightPadding: 28
 
         text: root.displayText
-        color: Theme.text
+        color: Theme.textPrimary
 
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
@@ -56,12 +56,25 @@ ComboBox {
     }
 
     background: Rectangle {
-        radius: 6
+        radius: Theme.islandRadius
 
-        color: root.hovered ? Theme.surfaceHover : Theme.surfaceRaised
+        color: root.hovered ? Theme.islandSurfaceHover : Theme.popupSurfaceRaised
 
         border.width: 1
-        border.color: Theme.border
+        border.color: root.activeFocus ? Theme.accentCyan : (root.hovered ? Theme.borderHover : Theme.borderDefault)
+
+        Behavior on color {
+            ColorAnimation {
+                duration: Theme.animationHover
+                easing.type: Theme.easingStandard
+            }
+        }
+        Behavior on border.color {
+            ColorAnimation {
+                duration: Theme.animationHover
+                easing.type: Theme.easingStandard
+            }
+        }
     }
 
     delegate: ItemDelegate {
@@ -80,7 +93,7 @@ ComboBox {
                 implicitHeight: 8
                 radius: 4
 
-                color: deviceDelegate.model.value === root.currentValue ? Theme.text : "transparent"
+                color: deviceDelegate.model.value === root.currentValue ? Theme.accentCyan : "transparent"
             }
 
             Text {
@@ -88,7 +101,7 @@ ComboBox {
                 Layout.fillWidth: true
 
                 text: deviceDelegate.model.text
-                color: Theme.text
+                color: Theme.textPrimary
 
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
@@ -97,7 +110,7 @@ ComboBox {
 
         background: Rectangle {
             radius: 5
-            color: deviceDelegate.hovered ? Theme.surfaceHover : "transparent"
+            color: deviceDelegate.hovered ? Theme.islandSurfaceHover : "transparent"
         }
     }
 
@@ -118,11 +131,11 @@ ComboBox {
         }
 
         background: Rectangle {
-            radius: 6
-            color: Theme.surface
+            radius: Theme.islandRadius
+            color: Theme.popupSurfaceRaised
 
             border.width: 1
-            border.color: Theme.border
+            border.color: Theme.borderDefault
         }
     }
 }

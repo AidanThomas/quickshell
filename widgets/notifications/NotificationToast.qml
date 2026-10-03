@@ -1,3 +1,5 @@
+import qs.config
+
 import QtQuick
 
 Item {
@@ -48,15 +50,15 @@ Item {
 
         Behavior on x {
             NumberAnimation {
-                duration: 200
-                easing.type: Easing.OutCubic
+                duration: Theme.animationState
+                easing.type: Theme.easingEntrance
             }
         }
 
         Behavior on y {
             NumberAnimation {
-                duration: 200
-                easing.type: Easing.OutCubic
+                duration: Theme.animationState
+                easing.type: Theme.easingEntrance
             }
         }
     }

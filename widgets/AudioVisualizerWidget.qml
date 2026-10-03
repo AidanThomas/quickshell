@@ -8,9 +8,19 @@ import Quickshell.Io
 Item {
     id: root
     implicitWidth: bars.implicitWidth
-    implicitHeight: 30
+    implicitHeight: Theme.islandHeight - Theme.islandPaddingVertical * 2
 
     property int barCount: 32
+
+    function barColor(level) {
+        const mix = Math.max(0, Math.min(1, level)) * 0.3;
+        return Qt.rgba(
+            Theme.visualizerBar.r * (1 - mix) + Theme.visualizerPeak.r * mix,
+            Theme.visualizerBar.g * (1 - mix) + Theme.visualizerPeak.g * mix,
+            Theme.visualizerBar.b * (1 - mix) + Theme.visualizerPeak.b * mix,
+            1
+        );
+    }
 
     ListModel {
         id: levels
@@ -54,7 +64,7 @@ Item {
     Row {
         id: bars
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 2
+        spacing: 1
 
         Repeater {
             model: levels
@@ -65,12 +75,21 @@ Item {
                 width: 2
                 height: 2 + level * (root.height - 2)
                 anchors.verticalCenter: parent.verticalCenter
-                color: Theme.text
+                color: root.barColor(level)
+                opacity: 0.4 + level * 0.55
                 radius: 1
 
                 Behavior on height {
                     NumberAnimation {
-                        duration: 35
+                        duration: Theme.animationVisualizer
+                        easing.type: Theme.easingResponsive
+                    }
+                }
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Theme.animationVisualizer
+                        easing.type: Theme.easingResponsive
                     }
                 }
             }

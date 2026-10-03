@@ -14,15 +14,15 @@ Rectangle {
 
     implicitWidth: 28
     implicitHeight: 28
-    radius: 6
+    radius: Theme.islandRadius
 
-    color: mouseArea.containsMouse ? Theme.surfaceHover : "transparent"
+    color: mouseArea.containsMouse ? Theme.islandSurfaceHover : "transparent"
 
     Text {
-        font.family: Theme.fontFamily
+        font.family: Theme.iconFontFamily
         anchors.centerIn: parent
         text: root.muted ? root.mutedIcon : root.activeIcon
-        color: Theme.text
+        color: root.muted ? Theme.accentAmber : Theme.textPrimary
     }
 
     MouseArea {
@@ -30,6 +30,7 @@ Rectangle {
 
         anchors.fill: parent
         hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
         onClicked: root.toggled()
     }
 }

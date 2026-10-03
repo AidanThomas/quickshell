@@ -14,13 +14,13 @@ Row {
         height: 24
         radius: 6
 
-        color: previousMouse.containsMouse ? Theme.surfaceHover : "transparent"
+        color: previousMouse.containsMouse ? Theme.islandSurfaceHover : "transparent"
 
         Text {
-            font.family: Theme.fontFamily
+            font.family: Theme.iconFontFamily
             anchors.centerIn: parent
             text: "󰒮"
-            color: Theme.text
+            color: Theme.textPrimary
             opacity: root.player?.canGoPrevious ? 1.0 : 0.3
         }
 
@@ -29,7 +29,11 @@ Row {
             hoverEnabled: true
             anchors.fill: parent
             enabled: root.player?.canGoPrevious ?? false
-            onClicked: root.player.previous()
+            cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+            onClicked: {
+                if (root.player?.canGoPrevious)
+                    root.player.previous();
+            }
         }
     }
 
@@ -38,13 +42,13 @@ Row {
         height: 24
         radius: 6
 
-        color: playPauseMouse.containsMouse ? Theme.surfaceHover : "transparent"
+        color: playPauseMouse.containsMouse ? Theme.islandSurfaceHover : "transparent"
 
         Text {
-            font.family: Theme.fontFamily
+            font.family: Theme.iconFontFamily
             anchors.centerIn: parent
             text: root.player?.isPlaying ? "󰏤" : "󰐊"
-            color: Theme.text
+            color: root.player?.isPlaying ? Theme.accentCyan : Theme.textPrimary
             opacity: root.player?.canTogglePlaying ? 1.0 : 0.3
         }
 
@@ -53,7 +57,11 @@ Row {
             hoverEnabled: true
             anchors.fill: parent
             enabled: root.player?.canTogglePlaying ?? false
-            onClicked: root.player.togglePlaying()
+            cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+            onClicked: {
+                if (root.player?.canTogglePlaying)
+                    root.player.togglePlaying();
+            }
         }
     }
 
@@ -62,13 +70,13 @@ Row {
         height: 24
         radius: 6
 
-        color: nextMouse.containsMouse ? Theme.surfaceHover : "transparent"
+        color: nextMouse.containsMouse ? Theme.islandSurfaceHover : "transparent"
 
         Text {
-            font.family: Theme.fontFamily
+            font.family: Theme.iconFontFamily
             anchors.centerIn: parent
             text: "󰒭"
-            color: Theme.text
+            color: Theme.textPrimary
             opacity: root.player?.canGoNext ? 1.0 : 0.3
         }
 
@@ -77,7 +85,11 @@ Row {
             hoverEnabled: true
             anchors.fill: parent
             enabled: root.player?.canGoNext ?? false
-            onClicked: root.player.next()
+            cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+            onClicked: {
+                if (root.player?.canGoNext)
+                    root.player.next();
+            }
         }
     }
 }
