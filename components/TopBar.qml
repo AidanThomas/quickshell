@@ -3,23 +3,14 @@ import qs.widgets
 
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
 
-PanelWindow {
+Item {
     id: topBar
 
     required property int barHeight
     required property color glassColor
 
-    anchors {
-        top: true
-        left: true
-        right: true
-    }
-
     implicitHeight: barHeight
-
-    color: "transparent"
 
     Rectangle {
         anchors.fill: parent

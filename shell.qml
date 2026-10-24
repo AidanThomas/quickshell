@@ -13,4 +13,8 @@ ShellRoot {
         frameThickness: 6
         topBarHeight: 52
     }
+
+    FrameReservation {
+        reservedHeight: 52
+    }
 }
