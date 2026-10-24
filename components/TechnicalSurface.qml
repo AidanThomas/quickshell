@@ -1,7 +1,6 @@
 import qs.config
 
 import QtQuick
-import QtQuick.Shapes
 
 Item {
     id: root
@@ -11,6 +10,7 @@ Item {
     property color highlightColor: Theme.glassEdgeHighlight
     property real outlineWidth: 1
     property real cutSize: 5
+    property real radius: Theme.islandRadius
     property bool highlightVisible: true
 
     Behavior on fillColor {
@@ -27,43 +27,24 @@ Item {
         }
     }
 
-    Shape {
+    Rectangle {
         anchors.fill: parent
+        radius: Math.min(root.radius, height / 2)
+        color: root.fillColor
+        border.width: root.outlineWidth
+        border.color: root.outlineColor
         antialiasing: true
-
-        ShapePath {
-            strokeColor: root.outlineColor
-            strokeWidth: root.outlineWidth
-            fillColor: root.fillColor
-            joinStyle: ShapePath.MiterJoin
-
-            startX: root.outlineWidth / 2
-            startY: root.outlineWidth / 2
-            PathLine { x: root.width - root.cutSize; y: root.outlineWidth / 2 }
-            PathLine { x: root.width - root.outlineWidth / 2; y: root.cutSize }
-            PathLine { x: root.width - root.outlineWidth / 2; y: root.height - root.outlineWidth / 2 }
-            PathLine { x: root.cutSize; y: root.height - root.outlineWidth / 2 }
-            PathLine { x: root.outlineWidth / 2; y: root.height - root.cutSize }
-            PathLine { x: root.outlineWidth / 2; y: root.outlineWidth / 2 }
-        }
     }
 
-    Shape {
-        anchors.fill: parent
-        antialiasing: true
+    Rectangle {
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.topMargin: 1
+        width: Math.max(0, parent.width - root.radius * 1.5)
+        height: 1
+        radius: 0.5
+        color: root.highlightColor
         visible: root.highlightVisible
-
-        ShapePath {
-            strokeColor: root.highlightColor
-            strokeWidth: 1
-            fillColor: "transparent"
-            joinStyle: ShapePath.MiterJoin
-            capStyle: ShapePath.FlatCap
-
-            startX: 1
-            startY: 1.5
-            PathLine { x: root.width - root.cutSize; y: 1.5 }
-            PathLine { x: root.width - 1; y: root.cutSize }
-        }
+        opacity: 0.45
     }
 }

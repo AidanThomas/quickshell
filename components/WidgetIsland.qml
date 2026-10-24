@@ -30,10 +30,52 @@ Item {
         : ((keyboardFocused || hovered) ? Theme.borderHover : Theme.borderDefault)
 
     readonly property bool hovered: hoverEnabled && hoverHandler.hovered
+    property real entranceProgress: 0
 
     implicitWidth: contentContainer.implicitWidth + horizontalPadding * 2
     implicitHeight: Theme.islandHeight
-    opacity: !enabled ? 0.45 : (muted ? 0.68 : 1)
+    opacity: entranceProgress * (!enabled ? 0.45 : (muted ? 0.68 : 1))
+    scale: entranceProgress * (hovered ? 1.035 : 1)
+    transformOrigin: Item.Center
+
+    transform: Translate {
+        id: liftTransform
+        y: root.hovered ? -2 : 0
+
+        Behavior on y {
+            NumberAnimation {
+                duration: Theme.animationHover
+                easing.type: Theme.easingResponsive
+            }
+        }
+    }
+
+    Component.onCompleted: entranceAnimation.start()
+
+    NumberAnimation {
+        id: entranceAnimation
+        target: root
+        property: "entranceProgress"
+        from: 0
+        to: 1
+        duration: Theme.animationEntrance
+        easing.type: Theme.easingEntrance
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        anchors.leftMargin: -2
+        anchors.rightMargin: -2
+        anchors.topMargin: 2
+        anchors.bottomMargin: -3
+        radius: Theme.islandRadius + 2
+        color: Theme.shadowColor
+        opacity: root.hovered ? 0.8 : 0.52
+
+        Behavior on opacity {
+            NumberAnimation { duration: Theme.animationHover }
+        }
+    }
 
     TechnicalSurface {
         anchors.fill: parent
@@ -41,6 +83,7 @@ Item {
         fillColor: root.surfaceColor
         outlineWidth: Theme.islandBorderWidth
         outlineColor: root.outlineColor
+        radius: Theme.islandRadius
     }
 
     Item {
@@ -57,16 +100,15 @@ Item {
         id: accent
 
         anchors {
-            left: parent.left
+            horizontalCenter: parent.horizontalCenter
             bottom: parent.bottom
-            leftMargin: Theme.surfaceCutSize
+            bottomMargin: 2
         }
 
-        width: root.fullWidthAccent
-            ? Math.max(0, root.width - Theme.surfaceCutSize * 2)
-            : Math.min(18, Math.max(0, root.width - Theme.surfaceCutSize * 2))
-        height: 1
+        width: root.fullWidthAccent ? Math.max(0, root.width - 18) : 20
+        height: 2
         color: root.accentColor
+        radius: 1
         opacity: root.accentVisible ? 1 : 0
 
         Behavior on color {
@@ -101,6 +143,13 @@ Item {
         NumberAnimation {
             duration: Theme.animationState
             easing.type: Theme.easingStandard
+        }
+    }
+
+    Behavior on scale {
+        NumberAnimation {
+            duration: Theme.animationHover
+            easing.type: Theme.easingResponsive
         }
     }
 }

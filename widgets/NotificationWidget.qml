@@ -21,15 +21,6 @@ Item {
     // its singleton is not exposed to expressions by this Quickshell build.
     readonly property bool hasUrgent: notificationServer.trackedNotifications.values.some(notification => notification.urgency === 2)
 
-    function removeToast(notification) {
-        for (let i = 0; i < toastModel.count; i++) {
-            if (toastModel.get(i).notification === notification) {
-                toastModel.remove(i);
-                return;
-            }
-        }
-    }
-
     function hideAllToasts() {
         for (let i = 0; i < toastRepeater.count; i++) {
             const toast = toastRepeater.itemAt(i);
@@ -159,7 +150,9 @@ Item {
 
     PanelWindow {
         id: toastLayer
-        visible: true
+        // Unmap the layer once the last toast is gone so an empty transparent
+        // surface can never intercept clicks in the top-right of applications.
+        visible: toastModel.count > 0
 
         anchors {
             top: true
@@ -192,7 +185,10 @@ Item {
                     root.unreadCount = 0;
                     root.hideAllToasts();
                 }
-                onClosed: root.removeToast(notification)
+                // ListModel may wrap QObject values, making identity-based lookup
+                // unreliable. The delegate's current index is the authoritative
+                // entry to remove.
+                onClosed: toastModel.remove(index)
             }
         }
     }

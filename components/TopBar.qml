@@ -9,7 +9,7 @@ PanelWindow {
     id: topBar
 
     required property int barHeight
-    required color
+    required property color glassColor
 
     anchors {
         top: true
@@ -19,10 +19,20 @@ PanelWindow {
 
     implicitHeight: barHeight
 
+    color: "transparent"
+
+    Rectangle {
+        anchors.fill: parent
+        radius: 0
+        color: topBar.glassColor
+    }
+
     RowLayout {
         anchors.fill: parent
-        anchors.leftMargin: 8
-        anchors.rightMargin: 8
+        anchors.leftMargin: 12
+        anchors.rightMargin: 12
+        anchors.topMargin: 8
+        anchors.bottomMargin: 8
         spacing: Theme.islandGap
 
         WidgetIsland {

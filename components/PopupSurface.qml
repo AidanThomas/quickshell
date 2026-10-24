@@ -17,6 +17,7 @@ Item {
         fillColor: Theme.popupSurface
         outlineWidth: Theme.islandBorderWidth
         outlineColor: Theme.borderHover
+        radius: Theme.popupRadius
     }
 
     Item {
@@ -31,9 +32,9 @@ Item {
             horizontalCenter: parent.horizontalCenter
             bottom: parent.top
         }
-        width: 18
-        height: 3
+        width: 28
+        height: 4
         color: root.accentColor
-        radius: 1
+        radius: 2
     }
 }

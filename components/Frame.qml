@@ -11,7 +11,7 @@ ShellRoot {
 
     TopBar {
         barHeight: frame.topBarHeight
-        color: frame.fillColor
+        glassColor: frame.fillColor
     }
 
     Edge {
@@ -37,6 +37,7 @@ ShellRoot {
         radius: frame.cornerRadius
         fillColor: frame.fillColor
         frameThickness: frame.frameThickness
+        topOffset: frame.topBarHeight
     }
 
     ConcaveCorner {
@@ -44,6 +45,7 @@ ShellRoot {
         radius: frame.cornerRadius
         fillColor: frame.fillColor
         frameThickness: frame.frameThickness
+        topOffset: frame.topBarHeight
     }
 
     ConcaveCorner {
