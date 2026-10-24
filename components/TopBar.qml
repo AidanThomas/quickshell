@@ -10,6 +10,22 @@ Item {
     required property int barHeight
     required property color glassColor
 
+    signal keyboardNavigationExitRequested
+
+    function focusFirstInteractive() {
+        if (playerIsland.visible) {
+            playerIsland.forceActiveFocus(Qt.TabFocusReason);
+            return;
+        }
+
+        volumeIsland.forceActiveFocus(Qt.TabFocusReason);
+    }
+
+    function clearKeyboardFocus() {
+        topBar.forceActiveFocus(Qt.OtherFocusReason);
+        topBar.focus = false;
+    }
+
     implicitHeight: barHeight
 
     Rectangle {
@@ -43,12 +59,26 @@ Item {
             Layout.fillWidth: true
         }
 
-        WidgetIsland {
+        InteractiveIsland {
+            id: playerIsland
+
             visible: playerWidget.hasPlayer
-            active: playerWidget.popupOpen
+            open: playerWidget.popupOpen
+            secondaryActionEnabled: playerWidget.canTogglePlaying ?? false
+            accessibleName: "Media"
+            accessibleDescription: playerWidget.trackDescription ?? ""
+            tooltipText: (playerWidget.canTogglePlaying ?? false)
+                ? "Media — secondary click to play or pause"
+                : "Media"
+
+            onPrimaryTriggered: playerWidget.togglePopup()
+            onSecondaryTriggered: playerWidget.togglePlaying()
+            onEscapeRequested: playerWidget.closePopup()
 
             PlayerWidget {
                 id: playerWidget
+
+                onPopupEscapeDismissed: playerIsland.forceActiveFocus(Qt.TabFocusReason)
             }
         }
 
@@ -67,13 +97,28 @@ Item {
             }
         }
 
-        WidgetIsland {
-            active: volumeWidget.popupOpen
+        InteractiveIsland {
+            id: volumeIsland
+
+            open: volumeWidget.popupOpen
             attention: volumeWidget.inputMuted || volumeWidget.outputMuted
             fullWidthAccent: volumeWidget.popupOpen
+            wheelActionEnabled: volumeWidget.outputAvailable ?? false
+            accessibleName: "Audio"
+            accessibleDescription: volumeWidget.statusDescription ?? ""
+            tooltipEnabled: !(volumeWidget.childActionHovered ?? false)
+            tooltipText: (volumeWidget.outputAvailable ?? false)
+                ? "Audio — scroll to adjust output volume"
+                : "Audio unavailable"
+
+            onPrimaryTriggered: volumeWidget.togglePopup()
+            onWheelAdjusted: steps => volumeWidget.adjustOutputVolume(steps)
+            onEscapeRequested: volumeWidget.closePopup()
 
             VolumeWidget {
                 id: volumeWidget
+
+                onPopupEscapeDismissed: volumeIsland.forceActiveFocus(Qt.TabFocusReason)
             }
         }
 
@@ -83,5 +128,10 @@ Item {
 
             ClockWidget {}
         }
+    }
+
+    Keys.onEscapePressed: event => {
+        keyboardNavigationExitRequested();
+        event.accepted = true;
     }
 }

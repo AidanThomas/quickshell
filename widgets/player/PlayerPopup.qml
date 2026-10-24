@@ -11,6 +11,8 @@ PopupWindow {
     required property int artworkSize
     required property int popupSpacing
 
+    signal escapeDismissed
+
     grabFocus: true
 
     anchor {
@@ -23,6 +25,17 @@ PopupWindow {
     }
 
     color: "transparent"
+
+    Shortcut {
+        sequence: "Escape"
+        enabled: root.visible
+        context: Qt.WindowShortcut
+
+        onActivated: {
+            root.visible = false;
+            root.escapeDismissed();
+        }
+    }
 
     PopupSurface {
         anchors.fill: parent

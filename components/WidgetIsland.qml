@@ -12,43 +12,34 @@ Item {
 
     property bool hoverEnabled: true
     property bool active: false
+    property bool pressed: false
     property bool attention: false
     property bool critical: false
     property bool keyboardFocused: false
     property bool muted: false
+    property bool loading: false
+    property bool unavailable: false
     property bool fullWidthAccent: false
 
     property bool accentVisible: active || attention || critical || keyboardFocused
     property color accentColor: critical
         ? Theme.accentRed
         : (attention ? Theme.accentAmber : Theme.accentCyan)
-    property color surfaceColor: active || keyboardFocused
+    property color surfaceColor: active || pressed || keyboardFocused
         ? Theme.islandSurfaceActive
         : (hovered ? Theme.islandSurfaceHover : Theme.islandSurface)
     property color outlineColor: critical
         ? Theme.accentRed
         : ((keyboardFocused || hovered) ? Theme.borderHover : Theme.borderDefault)
 
-    readonly property bool hovered: hoverEnabled && hoverHandler.hovered
+    property bool hovered: hoverEnabled && hoverHandler.hovered
     property real entranceProgress: 0
 
     implicitWidth: contentContainer.implicitWidth + horizontalPadding * 2
     implicitHeight: Theme.islandHeight
-    opacity: entranceProgress * (!enabled ? 0.45 : (muted ? 0.68 : 1))
-    scale: entranceProgress * (hovered ? 1.035 : 1)
+    opacity: entranceProgress * ((!enabled || unavailable) ? 0.45 : ((muted || loading) ? 0.68 : 1))
+    scale: entranceProgress
     transformOrigin: Item.Center
-
-    transform: Translate {
-        id: liftTransform
-        y: root.hovered ? -2 : 0
-
-        Behavior on y {
-            NumberAnimation {
-                duration: Theme.animationHover
-                easing.type: Theme.easingResponsive
-            }
-        }
-    }
 
     Component.onCompleted: entranceAnimation.start()
 
@@ -146,10 +137,4 @@ Item {
         }
     }
 
-    Behavior on scale {
-        NumberAnimation {
-            duration: Theme.animationHover
-            easing.type: Theme.easingResponsive
-        }
-    }
 }

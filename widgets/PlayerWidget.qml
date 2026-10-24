@@ -6,6 +6,8 @@ import Quickshell.Services.Mpris
 Item {
     id: root
 
+    signal popupEscapeDismissed
+
     visible: root.hasPlayer
 
     implicitWidth: 280
@@ -14,6 +16,23 @@ Item {
     readonly property var player: Mpris.players.values.find(player => player.identity === "Spotify")
     readonly property bool hasPlayer: root.player !== undefined
     readonly property bool popupOpen: popupWindow.visible
+    readonly property bool canTogglePlaying: root.player?.canTogglePlaying ?? false
+    readonly property string trackDescription: root.hasPlayer
+        ? `${root.player?.trackTitle || "Untitled"} by ${root.player?.trackArtist || "Unknown artist"}`
+        : "Media unavailable"
+
+    function togglePopup() {
+        popupWindow.visible = !popupWindow.visible;
+    }
+
+    function closePopup() {
+        popupWindow.visible = false;
+    }
+
+    function togglePlaying() {
+        if (root.canTogglePlaying)
+            root.player.togglePlaying();
+    }
 
     Row {
         id: content
@@ -72,20 +91,6 @@ Item {
 
     }
 
-    MouseArea {
-        anchors.fill: parent
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        cursorShape: Qt.PointingHandCursor
-        onClicked: mouse => {
-            if (mouse.button === Qt.LeftButton) {
-                popupWindow.visible = !popupWindow.visible;
-            } else if (mouse.button === Qt.RightButton) {
-                if (root.player?.canTogglePlaying)
-                    root.player.togglePlaying();
-            }
-        }
-    }
-
     PlayerPopup {
         id: popupWindow
         player: root.player
@@ -93,5 +98,7 @@ Item {
         implicitHeight: 152
         artworkSize: 120
         popupSpacing: 16
+
+        onEscapeDismissed: root.popupEscapeDismissed()
     }
 }

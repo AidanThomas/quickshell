@@ -13,6 +13,8 @@ PopupWindow {
     required property var sink
     required property var source
 
+    signal escapeDismissed
+
     anchor {
         item: anchorItem
         edges: Edges.Bottom
@@ -25,6 +27,17 @@ PopupWindow {
 
     color: "transparent"
     grabFocus: true
+
+    Shortcut {
+        sequence: "Escape"
+        enabled: popup.visible
+        context: Qt.WindowShortcut
+
+        onActivated: {
+            popup.visible = false;
+            popup.escapeDismissed();
+        }
+    }
 
     PwObjectTracker {
         objects: [popup.sink, popup.source]

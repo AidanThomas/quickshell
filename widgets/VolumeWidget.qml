@@ -1,10 +1,15 @@
+pragma ComponentBehavior: Bound
+
 import qs.config
+import qs.components
 import qs.widgets.audio
 import QtQuick
 import Quickshell.Services.Pipewire
 
 Item {
     id: root
+
+    signal popupEscapeDismissed
 
     implicitWidth: content.implicitWidth
     implicitHeight: Math.max(24, content.implicitHeight)
@@ -14,6 +19,41 @@ Item {
     readonly property bool popupOpen: popup.visible
     readonly property bool inputMuted: root.source?.audio.muted ?? false
     readonly property bool outputMuted: root.sink?.audio.muted ?? false
+    readonly property bool inputAvailable: root.source?.audio !== undefined && root.source?.audio !== null
+    readonly property bool outputAvailable: root.sink?.audio !== undefined && root.sink?.audio !== null
+    readonly property bool childActionHovered: microphoneAction.hovered || outputAction.hovered
+    readonly property string statusDescription: {
+        const input = root.inputAvailable ? (root.inputMuted ? "microphone muted" : "microphone available") : "microphone unavailable";
+        const output = root.outputAvailable
+            ? (root.outputMuted ? "output muted" : `output ${Math.round(root.sink.audio.volume * 100)} percent`)
+            : "output unavailable";
+        return `${input}, ${output}`;
+    }
+
+    function togglePopup() {
+        popup.visible = !popup.visible;
+    }
+
+    function closePopup() {
+        popup.visible = false;
+    }
+
+    function toggleInputMute() {
+        if (root.inputAvailable)
+            root.source.audio.muted = !root.source.audio.muted;
+    }
+
+    function toggleOutputMute() {
+        if (root.outputAvailable)
+            root.sink.audio.muted = !root.sink.audio.muted;
+    }
+
+    function adjustOutputVolume(steps) {
+        if (!root.outputAvailable || steps === 0)
+            return;
+
+        root.sink.audio.volume = Math.max(0, Math.min(1, root.sink.audio.volume + steps * 0.02));
+    }
 
     PwObjectTracker {
         objects: [root.sink, root.source]
@@ -25,13 +65,8 @@ Item {
         sink: root.sink
         source: root.source
         visible: false
-    }
 
-    MouseArea {
-        anchors.fill: parent
-        acceptedButtons: Qt.LeftButton
-        cursorShape: Qt.PointingHandCursor
-        onClicked: popup.visible = !popup.visible
+        onEscapeDismissed: root.popupEscapeDismissed()
     }
 
     Row {
@@ -39,52 +74,30 @@ Item {
         anchors.centerIn: parent
         spacing: 10
 
-        Item {
-            implicitWidth: Math.max(24, microphoneIcon.implicitWidth)
-            implicitHeight: 24
+        IslandAction {
+            id: microphoneAction
 
-            Text {
-                font.family: Theme.iconFontFamily
-                id: microphoneIcon
-                anchors.centerIn: parent
-                text: {
-                    if (!root.source)
-                        return "";
+            text: root.inputMuted ? "Unmute microphone" : "Mute microphone"
+            tooltipText: root.inputAvailable ? text : "Microphone unavailable"
+            unavailable: !root.inputAvailable
+            iconText: root.inputMuted ? "" : ""
+            iconColor: root.inputMuted ? Theme.accentAmber : Theme.textMuted
 
-                    if (root.source.audio?.muted)
-                        return "";
-
-                    return "";
-                }
-
-                color: root.inputMuted ? Theme.accentAmber : Theme.textMuted
-
-                Behavior on color {
-                    ColorAnimation {
-                        duration: Theme.animationState
-                        easing.type: Theme.easingStandard
-                    }
-                }
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                acceptedButtons: Qt.RightButton
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    if (root.source?.audio)
-                        root.source.audio.muted = !root.source.audio.muted;
-                }
-            }
+            onClicked: root.toggleInputMute()
         }
 
-        Item {
-            implicitWidth: Math.max(24, speakerContent.implicitWidth)
-            implicitHeight: 24
+        IslandAction {
+            id: outputAction
 
-            Row {
+            text: root.outputMuted ? "Unmute output" : "Mute output"
+            tooltipText: root.outputAvailable ? text : "Audio output unavailable"
+            unavailable: !root.outputAvailable
+            iconColor: root.outputMuted ? Theme.accentAmber : Theme.accentCyan
+
+            onClicked: root.toggleOutputMute()
+
+            contentItem: Row {
                 id: speakerContent
-                anchors.centerIn: parent
                 spacing: 6
 
                 Text {
@@ -118,27 +131,6 @@ Item {
                             duration: Theme.animationState
                             easing.type: Theme.easingStandard
                         }
-                    }
-                }
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                acceptedButtons: Qt.RightButton
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                    if (root.sink?.audio)
-                        root.sink.audio.muted = !root.sink.audio.muted;
-                }
-
-                onWheel: wheel => {
-                    if (!root.sink?.audio)
-                        return;
-                    const step = 0.02;
-                    if (wheel.angleDelta.y > 0) {
-                        root.sink.audio.volume = Math.min(1, root.sink.audio.volume + step);
-                    } else if (wheel.angleDelta.y < 0) {
-                        root.sink.audio.volume = Math.max(0, root.sink.audio.volume - step);
                     }
                 }
             }
