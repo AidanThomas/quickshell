@@ -107,3 +107,6 @@ The shell should not become:
 These principles are a baseline for design judgment, discussion, and review. They are not absolute rules. When a component requires a different solution, the decision should be evaluated by how well it supports the wider experience: clarity, cohesion, responsiveness, atmosphere, and room for the desktop to breathe.
 
 As the shell develops, this document should evolve with its overall design direction. It should describe the system we are intentionally building, not preserve decisions simply because they were made in the past.
+
+Operational composition decisions for the persistent bar are maintained separately
+in `BAR_COMPOSITION.md`.
