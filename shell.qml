@@ -10,7 +10,6 @@ ShellRoot {
     Frame {
         fillColor: Theme.glassFrameSurface
         cornerRadius: 18
-        frameThickness: 6
         topBarHeight: 52
     }
 
