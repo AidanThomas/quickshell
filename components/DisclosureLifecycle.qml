@@ -33,6 +33,8 @@ QtObject {
 
     property Item origin: null
     property Item focusTarget: null
+    property string scopeId: DisclosureCoordinator.defaultScope
+    property bool exclusiveInScope: true
     property bool originAvailable: true
     property bool focusOnOpen: true
     property bool reducedMotion: false
@@ -70,6 +72,7 @@ QtObject {
         internal.openInputSource = inputSource;
         internal.lastDismissalReason = DisclosureLifecycle.NoDismissal;
         internal.restoreFocusOnClose = false;
+        DisclosureCoordinator.activate(root);
 
         if (internal.lifecycleState === DisclosureLifecycle.Closed) {
             internal.activeOrigin = root.origin;
@@ -205,6 +208,8 @@ QtObject {
         internal.surfaceReady = false;
         internal.restoreFocusOnClose = false;
 
+        DisclosureCoordinator.release(root);
+
         if (restoreFocus && closingOrigin !== null && closingOrigin.visible && closingOrigin.enabled)
             root.focusRestorationRequested(closingOrigin, reason);
 
@@ -223,6 +228,19 @@ QtObject {
 
     onOriginChanged: validateOrigin()
     onOriginAvailableChanged: validateOrigin()
+
+    onScopeIdChanged: {
+        if (root.effectiveOpen)
+            root.requestClose(DisclosureLifecycle.OriginUnavailable);
+    }
+
+    onExclusiveInScopeChanged: {
+        if (!exclusiveInScope) {
+            DisclosureCoordinator.release(root);
+        } else if (requestedOpen) {
+            DisclosureCoordinator.activate(root);
+        }
+    }
 
     onReducedMotionChanged: {
         if (!reducedMotion || (!openingTransition.running && !closingTransition.running))
@@ -295,4 +313,6 @@ QtObject {
         property bool transitionStartScheduled: false
         property real pendingTarget: 0
     }
+
+    Component.onDestruction: DisclosureCoordinator.release(root)
 }
