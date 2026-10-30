@@ -151,7 +151,8 @@ click-away dismissal. Those flows should clearly communicate that they are modal
 
 The reusable cross-window lifecycle, geometry, connector, and transition machinery
 belongs to the shared expansion work. This grammar defines the observable behavior
-that machinery must provide.
+that machinery must provide. `EXPANSION.md` defines its architectural lifecycle,
+ownership, dismissal, focus, and native-window contract.
 
 ## Interaction and semantic states
 
