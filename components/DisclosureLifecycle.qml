@@ -37,7 +37,7 @@ QtObject {
     property bool exclusiveInScope: true
     property bool originAvailable: true
     property bool focusOnOpen: true
-    property bool reducedMotion: false
+    property bool reducedMotion: MotionPreferences.reducedMotion
     property int transitionDuration: Theme.animationState
     property int transitionEasing: Theme.easingStandard
 

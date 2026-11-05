@@ -1,3 +1,5 @@
+import qs.config
+
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
@@ -14,7 +16,7 @@ PopupWindow {
     property bool originAvailable: true
     property bool focusOnOpen: true
     property bool clickAwayEnabled: true
-    property bool reducedMotion: false
+    property bool reducedMotion: MotionPreferences.reducedMotion
     property int originEdge: DisclosureGeometry.Bottom
     property real surfaceGap: 4
     property real screenMargin: 8

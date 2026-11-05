@@ -1,3 +1,5 @@
+import qs.config
+
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
@@ -15,7 +17,7 @@ PanelWindow {
     property bool originAvailable: true
     property bool focusOnOpen: true
     property bool clickAwayEnabled: true
-    property bool reducedMotion: false
+    property bool reducedMotion: MotionPreferences.reducedMotion
     property string layerNamespace: "quickshell:disclosure"
     property int originEdge: DisclosureGeometry.Right
     property real surfaceGap: 0
