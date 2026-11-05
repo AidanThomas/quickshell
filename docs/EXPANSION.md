@@ -497,6 +497,32 @@ The implementation and visual treatment have been exercised with Hyprglass both
 enabled and disabled. See `EXPANSION_VALIDATION.md` for the session matrix,
 qualified pointer handoff, and revalidation guidance.
 
+## Adoption status and follow-ups
+
+The infrastructure issue proves both supported native-window classes. Further
+widget work should consume this API rather than expand the primitive's scope:
+
+| Consumer | Status | Follow-up |
+| --- | --- | --- |
+| Media | Migrated to `DisclosurePopup`. | #13 may redesign player selection and content without recreating lifecycle behavior. |
+| Notification history | Migrated to `DisclosurePanel`. | #14 may redesign indicator, toast, and history behavior; toasts remain intentionally transient and separate. |
+| Audio | Still owns a raw `PopupWindow`, visibility toggle, focus grab, Escape handler, and focus callback. | #15 should migrate these mechanics to `DisclosurePopup` while reworking content hierarchy. |
+| Clock/calendar | No expanded surface or legacy popup exists. | #8 can use `InteractiveIsland` plus `DisclosurePopup` directly as the first clean new consumer. |
+| Power/session controls | The unmounted placeholder owns a raw `PanelWindow` and direct visibility toggle. | #6 should choose its final origin within #5 and use a shared adapter; destructive confirmation remains feature policy. |
+| Launcher/search | Not implemented. | #4 should choose `DisclosurePopup` or `DisclosurePanel` from its geometry and input requirements, while preserving the shared lifecycle. |
+| Unified system surface | Not implemented; it will absorb several future capabilities. | #5 owns the surface and scope decision, with tray (#7), privacy (#10), audio (#15), and power (#6) integrating rather than creating competing permanent disclosures. |
+
+No obsolete visibility, focus-grab, Escape, or mapping implementation remains in
+the migrated media and notification-history consumers. `NotificationToast` and
+its toast layer are not duplicated disclosure machinery: they are transient,
+non-exclusive surfaces with a different lifetime and no disclosure focus claim.
+
+The follow-up issues should remove legacy mechanics when they migrate; keeping a
+raw popup or panel alongside a shared adapter would create two authorities for
+open state. Content redesign, new services, confirmation policy, search models,
+and calendar behavior remain in their widget issues and are not requirements for
+the shared primitive.
+
 ## Invariants
 
 An implementation of this contract must preserve these invariants:
