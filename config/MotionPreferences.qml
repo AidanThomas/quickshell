@@ -9,7 +9,7 @@ Singleton {
     property bool reducedMotion: environmentRequestsReducedMotion()
 
     function environmentRequestsReducedMotion(): bool {
-        const value = Quickshell.env("QUICKSHELL_REDUCED_MOTION").trim().toLowerCase();
+        const value = (Quickshell.env("QUICKSHELL_REDUCED_MOTION") ?? "").trim().toLowerCase();
         return value === "1" || value === "true" || value === "yes" || value === "on";
     }
 }
