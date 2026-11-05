@@ -2,43 +2,22 @@ import qs.config
 import qs.components
 
 import QtQuick
-import Quickshell
 
-PopupWindow {
+DisclosurePopup {
     id: root
 
     required property var player
     required property int artworkSize
     required property int popupSpacing
 
-    signal escapeDismissed
+    originEdge: DisclosureGeometry.Bottom
+    surfaceGap: 4
 
-    grabFocus: true
-
-    anchor {
-        item: parent
-
-        edges: Edges.Bottom
-        gravity: Edges.Bottom
-
-        margins.top: 4
-    }
-
-    color: "transparent"
-
-    Shortcut {
-        sequence: "Escape"
-        enabled: root.visible
-        context: Qt.WindowShortcut
-
-        onActivated: {
-            root.visible = false;
-            root.escapeDismissed();
-        }
-    }
-
-    PopupSurface {
+    DisclosureSurface {
         anchors.fill: parent
+        geometry: root.geometry
+        revealProgress: root.revealProgress
+        originEdge: root.originEdge
         padding: 16
 
         Row {

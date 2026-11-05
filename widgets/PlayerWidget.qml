@@ -1,4 +1,5 @@
 import qs.config
+import qs.components
 import qs.widgets.player
 import QtQuick
 import Quickshell.Services.Mpris
@@ -6,7 +7,7 @@ import Quickshell.Services.Mpris
 Item {
     id: root
 
-    signal popupEscapeDismissed
+    required property Item popupOrigin
 
     visible: root.hasPlayer
 
@@ -15,18 +16,19 @@ Item {
 
     readonly property var player: Mpris.players.values.find(player => player.identity === "Spotify")
     readonly property bool hasPlayer: root.player !== undefined
-    readonly property bool popupOpen: popupWindow.visible
+    readonly property alias disclosure: popupWindow.lifecycle
+    readonly property bool popupOpen: popupWindow.effectiveOpen
     readonly property bool canTogglePlaying: root.player?.canTogglePlaying ?? false
     readonly property string trackDescription: root.hasPlayer
         ? `${root.player?.trackTitle || "Untitled"} by ${root.player?.trackArtist || "Unknown artist"}`
         : "Media unavailable"
 
-    function togglePopup() {
-        popupWindow.visible = !popupWindow.visible;
+    function togglePopup(inputSource = DisclosureLifecycle.ProgrammaticInput) {
+        popupWindow.toggle(inputSource);
     }
 
-    function closePopup() {
-        popupWindow.visible = false;
+    function closePopup(reason = DisclosureLifecycle.Programmatic, inputSource = DisclosureLifecycle.ProgrammaticInput, restoreFocus = false) {
+        popupWindow.requestClose(reason, inputSource, restoreFocus);
     }
 
     function togglePlaying() {
@@ -93,12 +95,11 @@ Item {
 
     PlayerPopup {
         id: popupWindow
+        origin: root.popupOrigin
         player: root.player
         implicitWidth: 400
         implicitHeight: 152
         artworkSize: 120
         popupSpacing: 16
-
-        onEscapeDismissed: root.popupEscapeDismissed()
     }
 }

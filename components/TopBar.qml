@@ -63,7 +63,7 @@ Item {
             id: playerIsland
 
             visible: playerWidget.hasPlayer
-            open: playerWidget.popupOpen
+            disclosure: playerWidget.disclosure
             secondaryActionEnabled: playerWidget.canTogglePlaying ?? false
             accessibleName: "Media"
             accessibleDescription: playerWidget.trackDescription ?? ""
@@ -71,14 +71,13 @@ Item {
                 ? "Media — secondary click to play or pause"
                 : "Media"
 
-            onPrimaryTriggered: playerWidget.togglePopup()
+            onPrimaryTriggered: inputSource => playerWidget.togglePopup(inputSource)
             onSecondaryTriggered: playerWidget.togglePlaying()
-            onEscapeRequested: playerWidget.closePopup()
+            onEscapeRequested: playerWidget.closePopup(DisclosureLifecycle.Escape, DisclosureLifecycle.Keyboard)
 
             PlayerWidget {
                 id: playerWidget
-
-                onPopupEscapeDismissed: playerIsland.forceActiveFocus(Qt.TabFocusReason)
+                popupOrigin: playerIsland
             }
         }
 

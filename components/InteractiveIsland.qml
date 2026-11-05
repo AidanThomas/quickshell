@@ -35,7 +35,7 @@ FocusScope {
 
     property bool keyPressed: false
 
-    signal primaryTriggered
+    signal primaryTriggered(int inputSource)
     signal secondaryTriggered
     signal wheelAdjusted(real steps)
     signal escapeRequested
@@ -67,7 +67,7 @@ FocusScope {
             if (mouse.button === Qt.RightButton)
                 root.secondaryTriggered();
             else
-                root.primaryTriggered();
+                root.primaryTriggered(DisclosureLifecycle.Pointer);
         }
     }
 
@@ -146,7 +146,7 @@ FocusScope {
 
         if (event.key === Qt.Key_Space || event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
             root.keyPressed = false;
-            root.primaryTriggered();
+            root.primaryTriggered(DisclosureLifecycle.Keyboard);
             event.accepted = true;
         }
     }
