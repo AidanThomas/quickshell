@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 
 QtObject {
     id: root
@@ -70,7 +71,7 @@ QtObject {
         let targetOrigin = Qt.point(anchor.x - fitted.x, anchor.y - fitted.y);
         let targetRect = Qt.rect(globalOrigin.x - fitted.x, globalOrigin.y - fitted.y, globalOrigin.width, globalOrigin.height);
 
-        if (root.targetItem && root.targetItem.window) {
+        if (root.targetItem && root.windowFor(root.targetItem)) {
             const mappedTopLeft = root.targetItem.mapFromGlobal(Qt.point(globalOrigin.x, globalOrigin.y));
             const mappedBottomRight = root.targetItem.mapFromGlobal(Qt.point(globalOrigin.x + globalOrigin.width, globalOrigin.y + globalOrigin.height));
             const mappedAnchor = root.targetItem.mapFromGlobal(anchor);
@@ -109,12 +110,15 @@ QtObject {
         if (root.availableGeometry.width > 0 && root.availableGeometry.height > 0)
             return root.availableGeometry;
 
-        const screen = root.origin?.window?.screen ?? null;
+        const screen = root.windowFor(root.origin)?.screen ?? null;
         if (!screen)
             return Qt.rect(0, 0, 0, 0);
 
-        const geometry = screen.availableGeometry ?? screen.geometry;
-        return Qt.rect(geometry.x, geometry.y, geometry.width, geometry.height);
+        return Qt.rect(screen.x, screen.y, screen.width, screen.height);
+    }
+
+    function windowFor(item: Item): var {
+        return item ? item.QsWindow.window : null;
     }
 
     function anchorForRect(rectangle: rect, edge: int): point {
@@ -257,7 +261,7 @@ QtObject {
     }
 
     property Connections originWindowConnections: Connections {
-        target: root.origin?.window ?? null
+        target: root.windowFor(root.origin)
         enabled: target !== null
         ignoreUnknownSignals: true
 

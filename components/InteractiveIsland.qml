@@ -12,6 +12,7 @@ FocusScope {
     property int verticalPadding: Theme.islandPaddingVertical
 
     property bool open: false
+    property var disclosure: null
     property bool attention: false
     property bool critical: false
     property bool muted: false
@@ -30,6 +31,7 @@ FocusScope {
     readonly property bool pressed: primaryArea.pressed || keyPressed
     readonly property bool keyboardFocused: activeFocus
     readonly property bool interactionEnabled: enabled && !loading && !unavailable
+    readonly property bool effectiveOpen: disclosure?.effectiveOpen ?? open
 
     property bool keyPressed: false
 
@@ -77,7 +79,7 @@ FocusScope {
         verticalPadding: root.verticalPadding
         hoverEnabled: false
         hovered: root.hovered
-        active: root.open
+        active: root.effectiveOpen
         pressed: root.pressed
         attention: root.attention
         critical: root.critical
@@ -123,7 +125,7 @@ FocusScope {
     }
 
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape && root.open) {
+        if (event.key === Qt.Key_Escape && root.effectiveOpen) {
             root.escapeRequested();
             event.accepted = true;
             return;
