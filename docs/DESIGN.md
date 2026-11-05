@@ -76,6 +76,10 @@ This principle does not prescribe a particular animation. A panel might extend f
 
 Transitions should be smooth, responsive, and reversible. They should clarify changes in state and spatial relationship without making routine actions feel slow. Ambient motion should be limited to information that is genuinely alive; the rest of the shell should not move simply to attract attention.
 
+`EXPANSION.md` defines the implemented disclosure lifecycle, geometry,
+compositor constraints, and consumer API that realize these principles across
+popup and layer-shell surfaces.
+
 ## Interaction and Resilience
 
 Hover, focus, pressed, open, muted, unavailable, and attention states should be perceptible without requiring excessive visual change. Feedback should arrive quickly and remain consistent with the material and motion language of the shell.

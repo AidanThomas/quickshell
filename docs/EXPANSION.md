@@ -7,10 +7,10 @@ larger surfaces. It turns the observable behavior in `INTERACTION_GRAMMAR.md` in
 an architectural state model that can be implemented consistently across
 `PopupWindow`, `PanelWindow`, and future presentation types.
 
-This is a contract for ownership, state, dismissal, focus, and window lifetime. It
-does not prescribe a single animation or surface shape. Geometry mapping,
-presentation adapters, motion tokens, and the final consumer API will be specified
-as those parts are implemented and validated.
+This is both the contract for ownership, state, dismissal, focus, and window
+lifetime and the adoption guide for the implemented consumer API. It does not
+prescribe a single animation or surface shape. Consumers share lifecycle and
+window mechanics while retaining control of their content and presentation.
 
 The terms **must**, **should**, and **may** describe required behavior, preferred
 defaults, and supported variation respectively.
@@ -237,6 +237,266 @@ The base lifecycle must remain correct when compositor effects are disabled. Any
 presentation that relies on a particular compositor effect requires a legible
 fallback and must be validated both with and without that effect.
 
+## Implemented architecture
+
+The implementation separates policy from native-window mechanics and widget
+content:
+
+| Layer | Component | Responsibility |
+| --- | --- | --- |
+| Lifecycle | `DisclosureLifecycle` | Requested state, effective state, transition progress, mapping requests, focus policy, dismissal reason, and safe reversal. |
+| Coordination | `DisclosureCoordinator` | One active ordinary disclosure per scope and replacement of the previous active disclosure. |
+| Geometry | `DisclosureGeometry` | Origin mapping, attachment edge, constrained surface placement, and connector geometry. |
+| Popup adapter | `DisclosurePopup` | `PopupWindow` anchoring, focus, mapping, click-away, Escape, and lifecycle integration. |
+| Panel adapter | `DisclosurePanel` | Layer-shell anchors, input mask, focus grab, click-through behavior, and lifecycle integration. |
+| Base presentation | `DisclosureSurface` | Directional reveal, surface treatment, connector, padding, and content host. |
+| Origin presentation | `InteractiveIsland` or equivalent | Activation, visible open state, keyboard semantics, and accessible origin identity. |
+| Consumer | Feature widget and content | Feature data, actions, content layout, availability, and the choice of adapter/presentation. |
+
+Consumers normally use an adapter and `DisclosureSurface`; they do not construct
+`DisclosureLifecycle`, `DisclosureGeometry`, or coordinator registration
+directly. The adapters own those objects and expose the parts consumers need.
+
+## Choosing an adapter
+
+Use `DisclosurePopup` for a compact surface anchored to an item, such as media,
+audio, a calendar, or a small system menu. It sizes to `implicitWidth` and
+`implicitHeight` and follows popup anchoring rules.
+
+Use `DisclosurePanel` when the expanded content must be a layer-shell surface,
+occupy a monitor edge, or use a custom input region. Notifications use this path.
+The consumer supplies layer anchors and an `inputTarget` that exactly describes
+the interactive disclosure; the rest of a transparent panel remains
+click-through.
+
+Do not choose `PanelWindow` merely to gain more drawing space. It has stronger
+compositor, focus-grab, and input-mask consequences than an anchored popup. A
+transient toast or tooltip is not an ordinary disclosure and should not join the
+exclusive coordinator unless it intentionally behaves like one.
+
+## Adapter API
+
+`DisclosurePopup` and `DisclosurePanel` expose the same lifecycle-facing API:
+
+| Member | Meaning |
+| --- | --- |
+| `origin` | Required item that owns and geometrically anchors the disclosure. |
+| `scopeId` | Exclusivity scope; defaults to `DisclosureCoordinator.defaultScope`. |
+| `exclusiveInScope` | Whether opening replaces the active ordinary disclosure in the scope. Defaults to `true`. |
+| `originAvailable` | Set false when the feature can no longer support the disclosure. |
+| `focusOnOpen` | Whether the adapter should focus its initial target once mapped. |
+| `clickAwayEnabled` | Whether loss of the adapter's focus grab requests a normal close. |
+| `reducedMotion` | Presentation preference; defaults to `MotionPreferences.reducedMotion`. |
+| `originEdge` | Edge from which placement and reveal direction are derived. |
+| `surfaceGap` | Distance between the origin anchor and expanded surface. |
+| `screenMargin` | Minimum fitting margin inside available output geometry. |
+| `initialFocusTarget` | Item focused after a keyboard, shortcut, or IPC open. |
+| `lifecycle` | Read-only `DisclosureLifecycle` used by origins and diagnostics. |
+| `geometry` | Read-only `DisclosureGeometry` supplied to the presentation. |
+| `revealProgress` | Read-only normalized transition progress for presentations. |
+| `effectiveOpen` | True during opening, open, and closing. |
+| `interactionEnabled` | True only while mapped and safe to interact with. |
+| `requestOpen(inputSource)` | Requests open and returns whether state changed. |
+| `requestClose(reason, inputSource, restoreFocus)` | Requests a reasoned close. |
+| `toggle(inputSource)` | Requests the opposite of the latest open intent. |
+
+`DisclosurePanel` additionally exposes `inputTarget` and `layerNamespace`.
+`inputTarget` must cover every interactive part of the panel and nothing else.
+The adapter uses it for both geometry and its native input mask.
+
+The lifecycle's `requestedOpen` answers what the latest request wants;
+`effectiveOpen` answers whether the disclosure still exists visibly. Origins
+must use `effectiveOpen`, usually by passing `lifecycle` to
+`InteractiveIsland.disclosure`. Consumers must not bind origin open treatment or
+native window visibility directly to `requestedOpen`.
+
+## Minimal popup consumer
+
+The feature widget receives the actual origin item, exposes its lifecycle to that
+origin, and delegates open/close requests to the adapter:
+
+```qml
+// ExampleDetailsWidget.qml
+import qs.components
+import qs.config
+import QtQuick
+
+Item {
+    id: root
+
+    required property Item popupOrigin
+
+    implicitWidth: compactLabel.implicitWidth
+    implicitHeight: compactLabel.implicitHeight
+
+    readonly property alias disclosure: details.lifecycle
+
+    function toggleDetails(inputSource): bool {
+        return details.toggle(inputSource);
+    }
+
+    Text {
+        id: compactLabel
+        text: "Details"
+    }
+
+    DisclosurePopup {
+        id: details
+
+        origin: root.popupOrigin
+        originAvailable: root.visible && root.enabled
+        originEdge: DisclosureGeometry.Bottom
+        implicitWidth: 320
+        implicitHeight: 180
+        initialFocusTarget: firstAction
+
+        DisclosureSurface {
+            anchors.fill: parent
+            geometry: details.geometry
+            revealProgress: details.revealProgress
+            originEdge: details.originEdge
+            connected: true
+            accentColor: Theme.accentCyan
+
+            Column {
+                anchors.fill: parent
+                spacing: 8
+
+                Text { text: "Details" }
+
+                FocusScope {
+                    id: firstAction
+                    activeFocusOnTab: true
+                    width: parent.width
+                    height: 32
+                    // Feature-specific action and visuals belong here.
+                }
+            }
+        }
+    }
+}
+```
+
+The bar or containing composition wires that widget to an interactive origin:
+
+```qml
+InteractiveIsland {
+    id: detailsOrigin
+
+    disclosure: detailsWidget.disclosure
+    accessibleName: "Details"
+    onPrimaryTriggered: inputSource => detailsWidget.toggleDetails(inputSource)
+    onEscapeRequested: detailsWidget.disclosure.requestClose(
+        DisclosureLifecycle.Escape,
+        DisclosureLifecycle.Keyboard
+    )
+
+    ExampleDetailsWidget {
+        id: detailsWidget
+        popupOrigin: detailsOrigin
+    }
+}
+```
+
+The same consumer can use `DisclosurePanel` instead when its native-window needs
+require it. Its content still receives `geometry`, `revealProgress`, and
+`originEdge` through `DisclosureSurface`; only the adapter-specific anchors,
+size, and input target change.
+
+## Consumer responsibilities
+
+The origin is responsible for:
+
+- passing the real activation input source to `toggle` or `requestOpen`;
+- deriving its visible open treatment from the adapter lifecycle;
+- providing keyboard activation, Escape routing, accessibility name, and a
+  stable practical hit target; and
+- remaining a valid geometry source while the disclosure is effective.
+
+The feature widget is responsible for:
+
+- selecting the adapter and attachment edge;
+- declaring when its origin or backing service is truly unavailable;
+- supplying feature data, actions, and content states;
+- choosing an initial focus target and a useful internal focus order; and
+- exposing a small feature-facing API instead of leaking native window details
+  throughout the bar.
+
+The adapter is responsible for mapping, unmapping, focus entry and release,
+Escape, click-away/focus-loss translation, native input regions, geometry
+refresh, and forwarding lifecycle state. A consumer must not duplicate those
+mechanisms or directly assign adapter `visible`, focus-grab state, or masks.
+
+The presentation is responsible for drawing the relationship: it consumes
+geometry and reveal progress, keeps content legible, and may choose another
+visual treatment. It must not decide whether the disclosure is open. When using
+`DisclosureSurface`, the connector is deliberately drawn inside the disclosure
+surface so independently composited glass windows do not overlap at the shared
+edge.
+
+## Focus, dismissal, and availability
+
+Always pass the actual input source. Treating a keyboard open as programmatic or
+pointer input prevents the lifecycle from applying the correct focus behavior.
+Set `initialFocusTarget` to the content scope or first useful control; every
+interactive child remains responsible for normal `Tab`, arrow-key, and semantic
+control behavior.
+
+Use the shared `DisclosureLifecycle` reason and input enums when closing. Feature
+logic may request `Programmatic`, but origin toggle, Escape, replacement, focus
+loss, and unavailable-origin paths must retain their distinct reasons so focus
+restoration remains predictable.
+
+Set `originAvailable` false only when the origin can no longer own a meaningful
+surface. A temporary loading state or missing field belongs in feature content
+and normally does not invalidate the origin. If responsive composition hides or
+replaces the origin, the lifecycle safely closes rather than retaining detached
+geometry.
+
+## Scope and transient surfaces
+
+The current default scope is `"shell"`. Consumers on the same shell therefore
+replace one another without widget-specific knowledge. A future per-output
+composition should pass a stable output-specific `scopeId` to every ordinary
+disclosure on that output.
+
+Set `exclusiveInScope: false` only for a surface that is intentionally allowed to
+coexist and whose focus behavior supports that choice. Notification toasts are
+separate transient windows rather than non-exclusive notification-centre
+disclosures; they do not register with the coordinator or steal disclosure
+focus.
+
+## Reduced motion and custom presentations
+
+Adapters default to the shared reduced-motion preference. The lifecycle settles
+to the same requested state, mapping, focus, and geometry whether motion runs or
+not. A custom presentation may replace travel with an immediate state change or
+brief fade, but must consume lifecycle progress rather than create a second open
+state or wait for its own animation to authorize cleanup.
+
+`DisclosureSurface` is the baseline, not a mandatory visual identity. A consumer
+may implement another reveal, shared-edge, or connector treatment using
+`geometry`, `revealProgress`, and `originEdge`. It must preserve the invariants
+below and remain usable with compositor effects disabled.
+
+## Compositor-specific behavior
+
+Quickshell popup and panel adapters are separate Wayland surfaces from the frame
+and from each other. No API can make Hyprglass sample them as one physical piece
+of glass. The connector and coordinated state create perceptual continuity while
+avoiding the doubled blur and border produced by overlapping translucent
+surfaces.
+
+`HyprlandFocusGrab` also means an outside pointer activation may be consumed while
+it dismisses a panel. In the validated notification-to-media path, the first
+click closes notifications and the following click opens media. This is a native
+focus-grab handoff, not a second lifecycle. Code must not simulate click replay or
+delay closure to disguise it without a compositor-safe input design.
+
+The implementation and visual treatment have been exercised with Hyprglass both
+enabled and disabled. See `EXPANSION_VALIDATION.md` for the session matrix,
+qualified pointer handoff, and revalidation guidance.
+
 ## Invariants
 
 An implementation of this contract must preserve these invariants:
@@ -252,4 +512,3 @@ An implementation of this contract must preserve these invariants:
 9. Reduced motion changes presentation duration, not lifecycle semantics.
 10. Compositor-specific visual effects are optional enhancements, not correctness
     dependencies.
-
