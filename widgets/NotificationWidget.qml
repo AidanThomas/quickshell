@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import qs.config
+import qs.components
 import qs.widgets.notifications
 
 import QtQuick
@@ -10,16 +11,28 @@ import Quickshell.Services.Notifications
 
 Item {
     id: root
+
+    required property Item popupOrigin
+
     implicitWidth: content.implicitWidth
     implicitHeight: Math.max(24, content.implicitHeight)
 
     property bool doNotDisturb: false
     property int unreadCount: 0
     property var notificationTimeStamps: []
-    readonly property bool popupOpen: notificationCenter.open
+    readonly property alias disclosure: notificationCenter.lifecycle
+    readonly property bool popupOpen: notificationCenter.effectiveOpen
     // NotificationUrgency.Critical is enum value 2 in the installed API, but
     // its singleton is not exposed to expressions by this Quickshell build.
     readonly property bool hasUrgent: notificationServer.trackedNotifications.values.some(notification => notification.urgency === 2)
+
+    function requestPopupOpen(inputSource = DisclosureLifecycle.ProgrammaticInput): bool {
+        return notificationCenter.requestOpen(inputSource);
+    }
+
+    function togglePopup(inputSource = DisclosureLifecycle.ProgrammaticInput): bool {
+        return notificationCenter.toggle(inputSource);
+    }
 
     function hideAllToasts() {
         for (let i = 0; i < toastRepeater.count; i++) {
@@ -66,7 +79,7 @@ Item {
 
             root.recordNotificationTimeStamp(notification);
 
-            if (!notificationCenter.open) {
+            if (!notificationCenter.lifecycle.requestedOpen) {
                 root.unreadCount++;
 
                 if (!root.doNotDisturb) {
@@ -127,8 +140,9 @@ Item {
                 return;
             }
 
-            notificationCenter.open = !notificationCenter.open;
-            if (notificationCenter.open) {
+            const opening = !notificationCenter.lifecycle.requestedOpen;
+            const changed = root.togglePopup(DisclosureLifecycle.Pointer);
+            if (opening && changed) {
                 root.unreadCount = 0;
                 root.hideAllToasts();
             }
@@ -137,9 +151,11 @@ Item {
 
     NotificationCenter {
         id: notificationCenter
+        origin: root.popupOrigin
         notificationServer: notificationServer
         receivedAtFor: root.receivedAtFor
         dismissNotification: root.dismissNotification
+        clearNotifications: root.clearNotifications
         doNotDisturb: root.doNotDisturb
         onDoNotDisturbToggled: {
             root.doNotDisturb = !root.doNotDisturb;
@@ -181,7 +197,7 @@ Item {
                 stackIndex: index
                 Component.onCompleted: showToast()
                 onClicked: {
-                    notificationCenter.open = true;
+                    root.requestPopupOpen(DisclosureLifecycle.Pointer);
                     root.unreadCount = 0;
                     root.hideAllToasts();
                 }

@@ -86,6 +86,8 @@ Item {
         }
 
         WidgetIsland {
+            id: notificationIsland
+
             active: notificationWidget.popupOpen
             attention: notificationWidget.unreadCount > 0
             critical: notificationWidget.hasUrgent
@@ -93,6 +95,7 @@ Item {
 
             NotificationWidget {
                 id: notificationWidget
+                popupOrigin: notificationIsland
             }
         }
 

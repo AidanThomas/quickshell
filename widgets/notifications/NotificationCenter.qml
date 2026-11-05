@@ -5,12 +5,10 @@ import qs.components
 
 import QtQuick
 import Quickshell
-import Quickshell.Hyprland
-import Quickshell.Wayland
 
 import "NotificationUtils.js" as NotificationUtils
 
-PanelWindow {
+DisclosurePanel {
     id: root
 
     required property bool doNotDisturb
@@ -19,11 +17,7 @@ PanelWindow {
     required property var dismissNotification
     required property var clearNotifications
 
-    property bool open: false
-
     signal doNotDisturbToggled
-
-    visible: true
 
     anchors {
         top: true
@@ -42,10 +36,8 @@ PanelWindow {
 
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
-
-    mask: Region {
-        item: notificationCenter
-    }
+    inputTarget: notificationCenter
+    originEdge: DisclosureGeometry.Bottom
 
     function openApplication(notification) {
         const entry = NotificationUtils.desktopEntryFor(notification, DesktopEntries.applications.values);
@@ -58,38 +50,23 @@ PanelWindow {
             const appId = toplevel.appId.toLowerCase();
             if (expectedIds.includes(appId)) {
                 toplevel.activate();
-                root.open = false;
+                root.requestClose(DisclosureLifecycle.Programmatic);
                 return;
             }
         }
 
         entry.execute();
-        root.open = false;
+        root.requestClose(DisclosureLifecycle.Programmatic);
     }
 
-    HyprlandFocusGrab {
-        id: focusGrab
-        windows: [root]
-        active: root.open
-        onCleared: {
-            root.open = false;
-        }
-    }
-
-    PopupSurface {
+    DisclosureSurface {
         id: notificationCenter
-        width: parent.width
-        height: parent.height
-        x: root.open ? 0 : root.width
+        anchors.fill: parent
+        geometry: root.geometry
+        revealProgress: root.revealProgress
+        originEdge: root.originEdge
         padding: 16
         accentColor: root.doNotDisturb ? Theme.accentBlue : Theme.accentCyan
-
-        Behavior on x {
-            NumberAnimation {
-                duration: Theme.animationState
-                easing.type: Theme.easingEntrance
-            }
-        }
 
         Column {
             anchors {

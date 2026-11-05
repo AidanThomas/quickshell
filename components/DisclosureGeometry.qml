@@ -70,6 +70,8 @@ QtObject {
 
         let targetOrigin = Qt.point(anchor.x - fitted.x, anchor.y - fitted.y);
         let targetRect = Qt.rect(globalOrigin.x - fitted.x, globalOrigin.y - fitted.y, globalOrigin.width, globalOrigin.height);
+        let connectorAnchor = anchor;
+        let connectorSurface = fitted;
 
         if (root.targetItem && root.windowFor(root.targetItem)) {
             const mappedTopLeft = root.targetItem.mapFromGlobal(Qt.point(globalOrigin.x, globalOrigin.y));
@@ -78,10 +80,12 @@ QtObject {
             if (root.finitePoint(mappedTopLeft) && root.finitePoint(mappedBottomRight) && root.finitePoint(mappedAnchor)) {
                 targetRect = root.normalizedRect(mappedTopLeft, mappedBottomRight);
                 targetOrigin = mappedAnchor;
+                connectorAnchor = mappedAnchor;
+                connectorSurface = Qt.rect(0, 0, root.targetItem.width, root.targetItem.height);
             }
         }
 
-        const connector = root.connectorForSurface(anchor, fitted, root.originEdge, root.connectorWidth, root.connectorThickness, root.connectorEdgeMargin);
+        const connector = root.connectorForSurface(connectorAnchor, connectorSurface, root.originEdge, root.connectorWidth, root.connectorThickness, root.connectorEdgeMargin);
 
         const changed = !internal.valid || !root.rectEqual(internal.originGlobalRect, globalOrigin) || !root.rectEqual(internal.originTargetRect, targetRect) || !root.pointEqual(internal.originAnchorGlobal, anchor) || !root.pointEqual(internal.originAnchorTarget, targetOrigin) || !root.rectEqual(internal.desiredSurfaceRect, desired) || !root.rectEqual(internal.surfaceRect, fitted) || !root.fuzzyEqual(internal.connectorCenter, connector.center) || !root.rectEqual(internal.connectorRect, connector.rect);
 
