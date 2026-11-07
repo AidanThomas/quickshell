@@ -220,6 +220,10 @@ it may displace. Related foundation work remains responsible for:
 Those efforts may expose a problem with this composition model, but should not
 silently assign a new permanent bar position to a capability.
 
+`VISUAL_IDENTITY.md` defines how the occupied regional material and the narrow
+connecting frame express this composition without filling intentionally empty
+space.
+
 ## Settled composition decisions
 
 - The launcher has a dedicated visible origin. Keyboard invocation remains primary,

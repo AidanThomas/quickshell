@@ -10,6 +10,10 @@ Item {
     required property int barHeight
     required property color glassColor
 
+    readonly property alias leftInputRegion: leftRegion
+    readonly property alias centreInputRegion: centreRegion
+    readonly property alias rightInputRegion: rightRegion
+
     signal keyboardNavigationExitRequested
 
     function focusFirstInteractive() {
@@ -28,41 +32,83 @@ Item {
 
     implicitHeight: barHeight
 
-    Rectangle {
-        anchors.fill: parent
-        radius: 0
-        color: topBar.glassColor
+    BarMaterial {
+        leftTarget: leftRegion
+        centreTarget: centreRegion
+        rightTarget: rightRegion
+        fillColor: topBar.glassColor
     }
 
-    RowLayout {
-        anchors.fill: parent
-        anchors.leftMargin: 12
-        anchors.rightMargin: 12
-        anchors.topMargin: 8
-        anchors.bottomMargin: 8
-        spacing: Theme.islandGap
+    Item {
+        id: leftRegion
 
-        WidgetIsland {
-            active: workspacesWidget.moving
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: parent.left
+        }
+        width: leftContent.implicitWidth + 16
 
-            WorkspacesWidget { id: workspacesWidget }
+        RowLayout {
+            id: leftContent
+
+            anchors {
+                verticalCenter: parent.verticalCenter
+                left: parent.left
+                leftMargin: 8
+            }
+            spacing: Theme.islandGap
+
+            WidgetIsland {
+                WorkspacesWidget { id: workspacesWidget }
+            }
+
+            // Ambient information belongs to the regional material without
+            // pretending to be another interactive capsule.
+            Item {
+                implicitWidth: visualizer.implicitWidth + 12
+                implicitHeight: Theme.islandHeight
+
+                AudioVisualizerWidget {
+                    id: visualizer
+                    anchors.centerIn: parent
+                }
+            }
+        }
+    }
+
+    Item {
+        id: centreRegion
+
+        readonly property bool occupied: playerWidget.hasPlayer
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            horizontalCenter: parent.horizontalCenter
+        }
+        width: occupied ? playerIsland.implicitWidth + 16 : 0
+        opacity: occupied ? 1 : 0
+
+        Behavior on width {
+            enabled: !MotionPreferences.reducedMotion
+            NumberAnimation {
+                duration: Theme.animationPosition
+                easing.type: Theme.easingStandard
+            }
         }
 
-        WidgetIsland {
-            hoverEnabled: false
-            horizontalPadding: 8
-
-            AudioVisualizerWidget {}
-        }
-
-        Item {
-            Layout.fillWidth: true
+        Behavior on opacity {
+            NumberAnimation {
+                duration: MotionPreferences.reducedMotion ? 0 : Theme.animationState
+                easing.type: Theme.easingStandard
+            }
         }
 
         InteractiveIsland {
             id: playerIsland
 
-            visible: playerWidget.hasPlayer
+            visible: centreRegion.occupied
+            anchors.centerIn: parent
             disclosure: playerWidget.disclosure
             secondaryActionEnabled: playerWidget.canTogglePlaying ?? false
             accessibleName: "Media"
@@ -80,55 +126,73 @@ Item {
                 popupOrigin: playerIsland
             }
         }
+    }
 
-        Item {
-            Layout.fillWidth: true
+    Item {
+        id: rightRegion
+
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            right: parent.right
         }
+        width: rightContent.implicitWidth + 16
 
-        WidgetIsland {
-            id: notificationIsland
+        RowLayout {
+            id: rightContent
 
-            active: notificationWidget.popupOpen
-            attention: notificationWidget.unreadCount > 0
-            critical: notificationWidget.hasUrgent
-            muted: notificationWidget.doNotDisturb
-
-            NotificationWidget {
-                id: notificationWidget
-                popupOrigin: notificationIsland
+            anchors {
+                verticalCenter: parent.verticalCenter
+                right: parent.right
+                rightMargin: 8
             }
-        }
+            spacing: Theme.islandGap
 
-        InteractiveIsland {
-            id: volumeIsland
+            WidgetIsland {
+                id: notificationIsland
 
-            open: volumeWidget.popupOpen
-            attention: volumeWidget.inputMuted || volumeWidget.outputMuted
-            fullWidthAccent: volumeWidget.popupOpen
-            wheelActionEnabled: volumeWidget.outputAvailable ?? false
-            accessibleName: "Audio"
-            accessibleDescription: volumeWidget.statusDescription ?? ""
-            tooltipEnabled: !(volumeWidget.childActionHovered ?? false)
-            tooltipText: (volumeWidget.outputAvailable ?? false)
-                ? "Audio — scroll to adjust output volume"
-                : "Audio unavailable"
+                active: notificationWidget.popupOpen
+                attention: notificationWidget.unreadCount > 0
+                critical: notificationWidget.hasUrgent
+                muted: notificationWidget.doNotDisturb
 
-            onPrimaryTriggered: volumeWidget.togglePopup()
-            onWheelAdjusted: steps => volumeWidget.adjustOutputVolume(steps)
-            onEscapeRequested: volumeWidget.closePopup()
-
-            VolumeWidget {
-                id: volumeWidget
-
-                onPopupEscapeDismissed: volumeIsland.forceActiveFocus(Qt.TabFocusReason)
+                NotificationWidget {
+                    id: notificationWidget
+                    popupOrigin: notificationIsland
+                }
             }
-        }
 
-        WidgetIsland {
-            hoverEnabled: false
-            horizontalPadding: 9
+            InteractiveIsland {
+                id: volumeIsland
 
-            ClockWidget {}
+                open: volumeWidget.popupOpen
+                attention: volumeWidget.inputMuted || volumeWidget.outputMuted
+                fullWidthAccent: volumeWidget.popupOpen
+                wheelActionEnabled: volumeWidget.outputAvailable ?? false
+                accessibleName: "Audio"
+                accessibleDescription: volumeWidget.statusDescription ?? ""
+                tooltipEnabled: !(volumeWidget.childActionHovered ?? false)
+                tooltipText: (volumeWidget.outputAvailable ?? false)
+                    ? "Audio — scroll to adjust output volume"
+                    : "Audio unavailable"
+
+                onPrimaryTriggered: volumeWidget.togglePopup()
+                onWheelAdjusted: steps => volumeWidget.adjustOutputVolume(steps)
+                onEscapeRequested: volumeWidget.closePopup()
+
+                VolumeWidget {
+                    id: volumeWidget
+
+                    onPopupEscapeDismissed: volumeIsland.forceActiveFocus(Qt.TabFocusReason)
+                }
+            }
+
+            WidgetIsland {
+                hoverEnabled: false
+                horizontalPadding: 9
+
+                ClockWidget {}
+            }
         }
     }
 

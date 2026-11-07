@@ -114,3 +114,6 @@ As the shell develops, this document should evolve with its overall design direc
 
 Operational composition decisions for the persistent bar are maintained separately
 in `BAR_COMPOSITION.md`.
+
+The bar's frame, regional material, and controlled widget differentiation are
+recorded in `VISUAL_IDENTITY.md`.

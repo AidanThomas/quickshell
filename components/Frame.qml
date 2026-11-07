@@ -60,10 +60,15 @@ PanelWindow {
         }
     }
 
-    // Only the bar accepts input. The remainder of this monitor-sized surface
-    // is visual, so clicks pass through to windows and the desktop below it.
+    // Only occupied bar regions accept input. The connecting rail and empty
+    // spans remain visual and click through to applications below.
     mask: Region {
-        item: topBar
+        Region { item: topBar.leftInputRegion }
+        Region {
+            item: topBar.centreInputRegion
+            radius: 16
+        }
+        Region { item: topBar.rightInputRegion }
     }
 
     TopBar {
@@ -82,19 +87,4 @@ PanelWindow {
         onKeyboardNavigationExitRequested: frame.leaveKeyboardNavigation()
     }
 
-    ConcaveCorner {
-        corner: ConcaveCorner.TopLeft
-        radius: frame.cornerRadius
-        fillColor: frame.fillColor
-        x: 0
-        y: frame.topBarHeight
-    }
-
-    ConcaveCorner {
-        corner: ConcaveCorner.TopRight
-        radius: frame.cornerRadius
-        fillColor: frame.fillColor
-        x: frame.width - width
-        y: frame.topBarHeight
-    }
 }

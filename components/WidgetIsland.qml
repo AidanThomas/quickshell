@@ -33,25 +33,9 @@ Item {
         : ((keyboardFocused || hovered) ? Theme.borderHover : Theme.borderDefault)
 
     property bool hovered: hoverEnabled && hoverHandler.hovered
-    property real entranceProgress: 0
-
     implicitWidth: contentContainer.implicitWidth + horizontalPadding * 2
     implicitHeight: Theme.islandHeight
-    opacity: entranceProgress * ((!enabled || unavailable) ? 0.45 : ((muted || loading) ? 0.68 : 1))
-    scale: entranceProgress
-    transformOrigin: Item.Center
-
-    Component.onCompleted: entranceAnimation.start()
-
-    NumberAnimation {
-        id: entranceAnimation
-        target: root
-        property: "entranceProgress"
-        from: 0
-        to: 1
-        duration: Theme.animationEntrance
-        easing.type: Theme.easingEntrance
-    }
+    opacity: (!enabled || unavailable) ? 0.45 : ((muted || loading) ? 0.68 : 1)
 
     Rectangle {
         anchors.fill: parent
