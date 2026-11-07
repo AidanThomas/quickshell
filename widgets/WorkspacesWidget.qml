@@ -107,19 +107,31 @@ Rectangle {
         }
 
         Behavior on centerPosition {
-            enabled: activeIndicator.initialized
+            enabled: activeIndicator.initialized && !MotionPreferences.reducedMotion
 
             NumberAnimation {
                 id: movementAnimation
-                duration: Theme.animationPosition
-                easing.type: Theme.easingStandard
+                duration: Theme.motionSpatialDuration
+                easing.type: Theme.motionSpatialEasing
             }
         }
 
         Behavior on width {
             NumberAnimation {
-                duration: Theme.animationHover
-                easing.type: Theme.easingStandard
+                duration: MotionPreferences.duration(Theme.motionFeedbackDuration)
+                easing.type: Theme.motionFeedbackEasing
+            }
+        }
+
+        Connections {
+            target: MotionPreferences
+
+            function onReducedMotionChanged(): void {
+                if (!MotionPreferences.reducedMotion || root.activeWorkspaceIndex < 0)
+                    return;
+
+                movementAnimation.stop();
+                activeIndicator.centerPosition = root.activeWorkspaceIndex * (root.indicatorSlotWidth + root.indicatorSpacing) + root.indicatorSlotWidth / 2;
             }
         }
     }

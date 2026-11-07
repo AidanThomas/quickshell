@@ -265,9 +265,9 @@ When reduced motion is enabled:
 - stop non-essential ambient motion;
 - do not delay interaction to preserve an animation timeline.
 
-Reduced motion must preserve the same lifecycle and final states. Detailed motion
-roles and implementation tokens belong to the shell motion work; expansion motion
-belongs to the shared expansion mechanism.
+Reduced motion must preserve the same lifecycle and final states. `MOTION.md`
+defines the implemented roles and semantic tokens; expansion progress remains
+owned by the shared expansion mechanism.
 
 ## Widget application
 
@@ -322,10 +322,9 @@ The prototype should demonstrate:
 - stable behavior during rapid open and close requests;
 - a state model and component API whose final states do not depend on animation.
 
-The shell motion work remains responsible for introducing the reduced-motion
-preference and validating equivalent final states once its shared motion roles and
-tokens exist. This prototype must not prevent that adaptation or encode interaction
-semantics solely in motion.
+The shared motion system supplies the reduced-motion preference and validates
+equivalent final states. This prototype must not encode interaction semantics
+solely in motion.
 
 Later workspace, notification, clock, launcher, and system-control work should use
 the same vocabulary while remaining free to develop distinct content and visual

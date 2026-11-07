@@ -89,8 +89,8 @@ Column {
                     x: Math.max(0, Math.min(track.width - width, progress.width - width / 2))
                     Behavior on opacity {
                         NumberAnimation {
-                            duration: Theme.animationHover
-                            easing.type: Theme.easingStandard
+                            duration: MotionPreferences.duration(Theme.motionFeedbackDuration)
+                            easing.type: Theme.motionFeedbackEasing
                         }
                     }
                 }

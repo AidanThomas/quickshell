@@ -38,8 +38,8 @@ Slider {
 
         Behavior on color {
             ColorAnimation {
-                duration: Theme.animationHover
-                easing.type: Theme.easingStandard
+                duration: MotionPreferences.duration(Theme.motionFeedbackDuration)
+                easing.type: Theme.motionFeedbackEasing
             }
         }
     }

@@ -25,14 +25,14 @@ Rectangle {
 
     Behavior on color {
         ColorAnimation {
-            duration: Theme.animationHover
-            easing.type: Theme.easingStandard
+            duration: MotionPreferences.duration(Theme.motionFeedbackDuration)
+            easing.type: Theme.motionFeedbackEasing
         }
     }
     Behavior on border.color {
         ColorAnimation {
-            duration: Theme.animationState
-            easing.type: Theme.easingStandard
+            duration: MotionPreferences.duration(Theme.motionStateDuration)
+            easing.type: Theme.motionStateEasing
         }
     }
 
@@ -94,8 +94,8 @@ Rectangle {
 
                 Behavior on color {
                     ColorAnimation {
-                        duration: Theme.animationHover
-                        easing.type: Theme.easingStandard
+                        duration: MotionPreferences.duration(Theme.motionFeedbackDuration)
+                        easing.type: Theme.motionFeedbackEasing
                     }
                 }
             }

@@ -110,8 +110,8 @@ Item {
 
             Behavior on color {
                 ColorAnimation {
-                    duration: Theme.animationState
-                    easing.type: Theme.easingStandard
+                    duration: MotionPreferences.duration(Theme.motionStateDuration)
+                    easing.type: Theme.motionStateEasing
                 }
             }
         }

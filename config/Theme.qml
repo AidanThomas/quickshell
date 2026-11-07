@@ -48,14 +48,20 @@ Singleton {
     readonly property int islandPaddingVertical: 4
     readonly property int islandGap: 10
 
-    // Shared motion
-    readonly property int animationHover: 140
-    readonly property int animationState: 240
-    readonly property int animationPosition: 360
-    readonly property int animationEntrance: 420
-    readonly property int animationVisualizer: 45
-    readonly property int easingStandard: Easing.InOutCubic
-    readonly property int easingEntrance: Easing.OutBack
-    readonly property int easingResponsive: Easing.OutCubic
+    // Semantic motion roles. Reduced-motion resolution belongs to
+    // MotionPreferences so these values continue to describe normal motion.
+    readonly property int motionFeedbackDuration: 140
+    readonly property int motionStateDuration: 240
+    readonly property int motionSpatialDuration: 360
+    readonly property int motionDisclosureDuration: 240
+    readonly property int motionTransientDuration: 240
+    readonly property int motionAmbientDuration: 45
+
+    readonly property int motionFeedbackEasing: Easing.OutCubic
+    readonly property int motionStateEasing: Easing.InOutCubic
+    readonly property int motionSpatialEasing: Easing.InOutCubic
+    readonly property int motionDisclosureEasing: Easing.InOutCubic
+    readonly property int motionTransientEasing: Easing.OutCubic
+    readonly property int motionAmbientEasing: Easing.OutCubic
 
 }

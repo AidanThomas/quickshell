@@ -67,8 +67,8 @@ Item {
 
             Behavior on opacity {
                 NumberAnimation {
-                    duration: Theme.animationHover
-                    easing.type: Theme.easingStandard
+                    duration: MotionPreferences.duration(Theme.motionFeedbackDuration)
+                    easing.type: Theme.motionFeedbackEasing
                 }
             }
         }

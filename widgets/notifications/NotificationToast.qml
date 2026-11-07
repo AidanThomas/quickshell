@@ -50,15 +50,15 @@ Item {
 
         Behavior on x {
             NumberAnimation {
-                duration: Theme.animationState
-                easing.type: Theme.easingEntrance
+                duration: MotionPreferences.duration(Theme.motionTransientDuration)
+                easing.type: Theme.motionTransientEasing
             }
         }
 
         Behavior on y {
             NumberAnimation {
-                duration: Theme.animationState
-                easing.type: Theme.easingEntrance
+                duration: MotionPreferences.duration(Theme.motionTransientDuration)
+                easing.type: Theme.motionTransientEasing
             }
         }
     }
@@ -72,7 +72,7 @@ Item {
 
     Timer {
         id: closeTimer
-        interval: 200
+        interval: MotionPreferences.duration(Theme.motionTransientDuration)
         repeat: false
         onTriggered: root.closed()
     }

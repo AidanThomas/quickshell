@@ -118,7 +118,7 @@ ShellRoot {
                     Qt.callLater(test.openPrimary);
                 } else if (state.stage === 8) {
                     if (reason !== DisclosureLifecycle.Programmatic || primary.revealProgress !== 0 || primary.visible || primary.effectiveOpen || primary.mask.item !== null || secondary.visible || secondary.mask.item !== null)
-                        test.fail("reduced-motion close did not reach a clean endpoint");
+                        test.fail("mid-transition reduced-motion close did not reach a clean endpoint");
 
                     console.log("DISCLOSURE_RESILIENCE_PASS");
                     Qt.quit();
@@ -229,8 +229,20 @@ ShellRoot {
                     test.fail("surface escaped the simulated monitor bounds");
 
                 state.stage = 8;
-                MotionPreferences.reducedMotion = true;
                 primary.requestClose(DisclosureLifecycle.Programmatic);
+                reducedMotionTimer.start();
+            }
+        }
+
+        Timer {
+            id: reducedMotionTimer
+
+            interval: 40
+            onTriggered: {
+                if (primary.lifecycle.lifecycleState !== DisclosureLifecycle.Closing || primary.revealProgress <= 0 || primary.revealProgress >= 1)
+                    test.fail("close was not in flight before enabling reduced motion");
+
+                MotionPreferences.reducedMotion = true;
             }
         }
 

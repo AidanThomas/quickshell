@@ -48,7 +48,10 @@ Item {
         opacity: root.hovered ? 0.8 : 0.52
 
         Behavior on opacity {
-            NumberAnimation { duration: Theme.animationHover }
+            NumberAnimation {
+                duration: MotionPreferences.duration(Theme.motionFeedbackDuration)
+                easing.type: Theme.motionFeedbackEasing
+            }
         }
     }
 
@@ -88,22 +91,22 @@ Item {
 
         Behavior on color {
             ColorAnimation {
-                duration: Theme.animationState
-                easing.type: Theme.easingStandard
+                duration: MotionPreferences.duration(Theme.motionStateDuration)
+                easing.type: Theme.motionStateEasing
             }
         }
 
         Behavior on width {
             NumberAnimation {
-                duration: Theme.animationState
-                easing.type: Theme.easingStandard
+                duration: MotionPreferences.duration(Theme.motionStateDuration)
+                easing.type: Theme.motionStateEasing
             }
         }
 
         Behavior on opacity {
             NumberAnimation {
-                duration: Theme.animationState
-                easing.type: Theme.easingStandard
+                duration: MotionPreferences.duration(Theme.motionStateDuration)
+                easing.type: Theme.motionStateEasing
             }
         }
     }
@@ -116,8 +119,8 @@ Item {
 
     Behavior on opacity {
         NumberAnimation {
-            duration: Theme.animationState
-            easing.type: Theme.easingStandard
+            duration: MotionPreferences.duration(Theme.motionStateDuration)
+            easing.type: Theme.motionStateEasing
         }
     }
 

@@ -38,8 +38,8 @@ QtObject {
     property bool originAvailable: true
     property bool focusOnOpen: true
     property bool reducedMotion: MotionPreferences.reducedMotion
-    property int transitionDuration: Theme.animationState
-    property int transitionEasing: Theme.easingStandard
+    property int transitionDuration: Theme.motionDisclosureDuration
+    property int transitionEasing: Theme.motionDisclosureEasing
 
     readonly property bool requestedOpen: internal.requestedOpen
     readonly property int lifecycleState: internal.lifecycleState

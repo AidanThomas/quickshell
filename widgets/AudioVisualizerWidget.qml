@@ -12,6 +12,11 @@ Item {
 
     property int barCount: 32
 
+    function resetLevels(): void {
+        for (let i = 0; i < levels.count; i++)
+            levels.setProperty(i, "level", 0);
+    }
+
     function barColor(level) {
         const mix = Math.max(0, Math.min(1, level)) * 0.3;
         return Qt.rgba(
@@ -36,12 +41,18 @@ Item {
 
     Process {
         id: cava
-        running: true
+        property bool retryEnabled: true
+
+        running: retryEnabled && !MotionPreferences.reducedMotion
         command: ["cava", "-p", "/home/aidant/.config/quickshell/config/cava.conf"]
 
         // Quickshell can start before PipeWire is ready. Cava exits when that
         // happens, so retry instead of leaving the visualizer permanently idle.
-        onExited: cavaRestartTimer.restart()
+        onExited: {
+            retryEnabled = false;
+            if (!MotionPreferences.reducedMotion)
+                cavaRestartTimer.restart();
+        }
 
         stdout: SplitParser {
             onRead: data => {
@@ -58,7 +69,20 @@ Item {
     Timer {
         id: cavaRestartTimer
         interval: 2000
-        onTriggered: cava.running = true
+        onTriggered: cava.retryEnabled = true
+    }
+
+    Connections {
+        target: MotionPreferences
+
+        function onReducedMotionChanged(): void {
+            if (MotionPreferences.reducedMotion) {
+                cavaRestartTimer.stop();
+                root.resetLevels();
+            } else {
+                cava.retryEnabled = true;
+            }
+        }
     }
 
     Row {
@@ -80,16 +104,18 @@ Item {
                 radius: 1
 
                 Behavior on height {
+                    enabled: !MotionPreferences.reducedMotion
                     NumberAnimation {
-                        duration: Theme.animationVisualizer
-                        easing.type: Theme.easingResponsive
+                        duration: Theme.motionAmbientDuration
+                        easing.type: Theme.motionAmbientEasing
                     }
                 }
 
                 Behavior on opacity {
+                    enabled: !MotionPreferences.reducedMotion
                     NumberAnimation {
-                        duration: Theme.animationVisualizer
-                        easing.type: Theme.easingResponsive
+                        duration: Theme.motionAmbientDuration
+                        easing.type: Theme.motionAmbientEasing
                     }
                 }
             }

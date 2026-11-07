@@ -80,6 +80,10 @@ Transitions should be smooth, responsive, and reversible. They should clarify ch
 compositor constraints, and consumer API that realize these principles across
 popup and layer-shell surfaces.
 
+`MOTION.md` defines the semantic motion roles, implementation tokens,
+reduced-motion mapping, interruption rules, and validation contract shared by
+those surfaces and the persistent bar.
+
 ## Interaction and Resilience
 
 Hover, focus, pressed, open, muted, unavailable, and attention states should be perceptible without requiring excessive visual change. Feedback should arrive quickly and remain consistent with the material and motion language of the shell.

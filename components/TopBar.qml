@@ -92,15 +92,15 @@ Item {
         Behavior on width {
             enabled: !MotionPreferences.reducedMotion
             NumberAnimation {
-                duration: Theme.animationPosition
-                easing.type: Theme.easingStandard
+                duration: Theme.motionSpatialDuration
+                easing.type: Theme.motionSpatialEasing
             }
         }
 
         Behavior on opacity {
             NumberAnimation {
-                duration: MotionPreferences.reducedMotion ? 0 : Theme.animationState
-                easing.type: Theme.easingStandard
+                duration: MotionPreferences.duration(Theme.motionStateDuration)
+                easing.type: Theme.motionStateEasing
             }
         }
 
