@@ -18,6 +18,8 @@ DisclosurePopup {
         geometry: root.geometry
         revealProgress: root.revealProgress
         originEdge: root.originEdge
+        connected: !root.canopyPresentationActive
+        materialVisible: !root.canopyPresentationActive
         padding: 16
 
         Row {

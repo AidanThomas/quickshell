@@ -39,14 +39,22 @@ Singleton {
     readonly property color visualizerPeak: "#A76BFF"
 
     // Shared island geometry
+    readonly property int topBarHeight: 52
     readonly property int islandHeight: 36
     readonly property int islandRadius: 18
-    readonly property int popupRadius: 22
+    readonly property int barSegmentRadius: 14
+    readonly property int popupRadius: barSegmentRadius
     readonly property int surfaceCutSize: 0
     readonly property int islandBorderWidth: 1
     readonly property int islandPaddingHorizontal: 10
     readonly property int islandPaddingVertical: 4
     readonly property int islandGap: 10
+    // Match Hyprland's configured gaps_out so floating shell surfaces share
+    // the same distance from output edges as tiled windows.
+    readonly property int screenEdgeGap: 10
+    // Keep expanded-surface framing in the same rhythm as the gaps between
+    // compact pill widgets in the bar.
+    readonly property int canopyBackingMargin: islandGap
 
     // Semantic motion roles. Reduced-motion resolution belongs to
     // MotionPreferences so these values continue to describe normal motion.

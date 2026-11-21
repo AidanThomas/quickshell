@@ -12,6 +12,7 @@ Item {
     property int originEdge: geometry?.originEdge ?? DisclosureGeometry.Bottom
     property int padding: 16
     property bool connected: true
+    property bool materialVisible: true
     property color accentColor: Theme.accentCyan
 
     readonly property real progress: Math.max(0, Math.min(1, revealProgress))
@@ -68,6 +69,7 @@ Item {
 
             TechnicalSurface {
                 anchors.fill: parent
+                visible: root.materialVisible
                 cutSize: Theme.surfaceCutSize
                 fillColor: Theme.popupSurface
                 outlineWidth: Theme.islandBorderWidth

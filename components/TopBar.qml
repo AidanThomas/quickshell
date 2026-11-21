@@ -32,11 +32,30 @@ Item {
 
     implicitHeight: barHeight
 
-    BarMaterial {
-        leftTarget: leftRegion
-        centreTarget: centreRegion
-        rightTarget: rightRegion
-        fillColor: topBar.glassColor
+    function canopyRect(): rect {
+        const presenter = CanopyDisclosure.presenter;
+        if (!presenter || !presenter.canopyPresentationActive)
+            return Qt.rect(0, 0, 0, 0);
+
+        const surface = presenter.canopySurfaceRect;
+        const topLeft = topBar.mapFromGlobal(Qt.point(surface.x, surface.y));
+        const backingMargin = Theme.canopyBackingMargin;
+        return Qt.rect(
+            topLeft.x - backingMargin,
+            topLeft.y - backingMargin,
+            surface.width + backingMargin * 2,
+            surface.height + backingMargin * 2
+        );
+    }
+
+    function canopyOriginRect(): rect {
+        const presenter = CanopyDisclosure.presenter;
+        if (!presenter || !presenter.canopyPresentationActive)
+            return Qt.rect(0, 0, 0, 0);
+
+        const origin = presenter.canopyOriginRect;
+        const topLeft = topBar.mapFromGlobal(Qt.point(origin.x, origin.y));
+        return Qt.rect(topLeft.x, topLeft.y, origin.width, origin.height);
     }
 
     Item {
@@ -165,7 +184,7 @@ Item {
             InteractiveIsland {
                 id: volumeIsland
 
-                open: volumeWidget.popupOpen
+                disclosure: volumeWidget.disclosure
                 attention: volumeWidget.inputMuted || volumeWidget.outputMuted
                 fullWidthAccent: volumeWidget.popupOpen
                 wheelActionEnabled: volumeWidget.outputAvailable ?? false
@@ -176,22 +195,37 @@ Item {
                     ? "Audio — scroll to adjust output volume"
                     : "Audio unavailable"
 
-                onPrimaryTriggered: volumeWidget.togglePopup()
+                onPrimaryTriggered: inputSource => volumeWidget.togglePopup(inputSource)
                 onWheelAdjusted: steps => volumeWidget.adjustOutputVolume(steps)
-                onEscapeRequested: volumeWidget.closePopup()
+                onEscapeRequested: volumeWidget.closePopup(
+                    DisclosureLifecycle.Escape,
+                    DisclosureLifecycle.Keyboard
+                )
 
                 VolumeWidget {
                     id: volumeWidget
-
-                    onPopupEscapeDismissed: volumeIsland.forceActiveFocus(Qt.TabFocusReason)
+                    popupOrigin: volumeIsland
                 }
             }
 
-            WidgetIsland {
-                hoverEnabled: false
-                horizontalPadding: 9
+            InteractiveIsland {
+                id: clockIsland
 
-                ClockWidget {}
+                horizontalPadding: 14
+                disclosure: clockWidget.disclosure
+                accessibleName: "Clock and calendar"
+                tooltipText: "Open calendar"
+
+                onPrimaryTriggered: inputSource => clockWidget.toggleCalendar(inputSource)
+                onEscapeRequested: clockWidget.closeCalendar(
+                    DisclosureLifecycle.Escape,
+                    DisclosureLifecycle.Keyboard
+                )
+
+                ClockWidget {
+                    id: clockWidget
+                    popupOrigin: clockIsland
+                }
             }
         }
     }

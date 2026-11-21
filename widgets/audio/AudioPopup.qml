@@ -3,48 +3,30 @@ import qs.components
 
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
 import Quickshell.Services.Pipewire
 
-PopupWindow {
+DisclosurePopup {
     id: popup
 
-    required property Item anchorItem
     required property var sink
     required property var source
 
-    signal escapeDismissed
-
-    anchor {
-        item: anchorItem
-        edges: Edges.Bottom
-        gravity: Edges.Bottom
-        margins.top: 27
-    }
-
     implicitWidth: 320
     implicitHeight: content.implicitHeight + 24
-
-    color: "transparent"
-    grabFocus: true
-
-    Shortcut {
-        sequence: "Escape"
-        enabled: popup.visible
-        context: Qt.WindowShortcut
-
-        onActivated: {
-            popup.visible = false;
-            popup.escapeDismissed();
-        }
-    }
+    originEdge: DisclosureGeometry.Bottom
+    surfaceGap: 4
 
     PwObjectTracker {
         objects: [popup.sink, popup.source]
     }
 
-    PopupSurface {
+    DisclosureSurface {
         anchors.fill: parent
+        geometry: popup.geometry
+        revealProgress: popup.revealProgress
+        originEdge: popup.originEdge
+        connected: !popup.canopyPresentationActive
+        materialVisible: !popup.canopyPresentationActive
         padding: 14
 
         ColumnLayout {

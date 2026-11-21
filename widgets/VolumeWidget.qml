@@ -9,14 +9,15 @@ import Quickshell.Services.Pipewire
 Item {
     id: root
 
-    signal popupEscapeDismissed
+    required property Item popupOrigin
 
     implicitWidth: content.implicitWidth
     implicitHeight: Math.max(24, content.implicitHeight)
 
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property var source: Pipewire.defaultAudioSource
-    readonly property bool popupOpen: popup.visible
+    readonly property alias disclosure: popup.lifecycle
+    readonly property bool popupOpen: popup.effectiveOpen
     readonly property bool inputMuted: root.source?.audio.muted ?? false
     readonly property bool outputMuted: root.sink?.audio.muted ?? false
     readonly property bool inputAvailable: root.source?.audio !== undefined && root.source?.audio !== null
@@ -30,12 +31,12 @@ Item {
         return `${input}, ${output}`;
     }
 
-    function togglePopup() {
-        popup.visible = !popup.visible;
+    function togglePopup(inputSource = DisclosureLifecycle.ProgrammaticInput) {
+        popup.toggle(inputSource);
     }
 
-    function closePopup() {
-        popup.visible = false;
+    function closePopup(reason = DisclosureLifecycle.Programmatic, inputSource = DisclosureLifecycle.ProgrammaticInput) {
+        popup.requestClose(reason, inputSource);
     }
 
     function toggleInputMute() {
@@ -61,12 +62,9 @@ Item {
 
     AudioPopup {
         id: popup
-        anchorItem: root
+        origin: root.popupOrigin
         sink: root.sink
         source: root.source
-        visible: false
-
-        onEscapeDismissed: root.popupEscapeDismissed()
     }
 
     Row {

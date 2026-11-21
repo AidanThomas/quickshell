@@ -120,7 +120,7 @@ island.
 | Privacy and capture | Exceptional | Right system summary | Hidden when no capture is active | Microphone, camera, or screen capture in use | Originating application and safe controls where available |
 | Other system health | Exceptional | Right system summary | Hidden while healthy | Thermal, storage, update, or degraded-service condition requiring awareness | Explanation and route to an appropriate action or setting |
 | System tray | Expansion-only; exceptional item state may surface | Right system summary | No row of application icons | An item explicitly reports attention or failure | Collapsed tray/overflow with item menus and actions |
-| Clock and date | Persistent | Right | Time with restrained date context | Timers or alarms only if later included intentionally | Calendar and time surface |
+| Clock and date | Persistent | Right | Custom-weight time with restrained date context | Timers or alarms only if later included intentionally | Locale-aware calendar with hourly and five-day local forecast |
 | Session and power | Expansion-only | Right system summary | No separate permanent power control | No attention state; availability failures belong inside the surface | Lock, logout, suspend, reboot, and power controls |
 
 ## Composition state matrix

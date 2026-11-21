@@ -48,6 +48,10 @@ AbstractButton {
     ToolTip.text: root.tooltipText
     ToolTip.delay: 650
 
+    HoverHandler {
+        cursorShape: root.unavailable ? Qt.ArrowCursor : Qt.PointingHandCursor
+    }
+
     Behavior on opacity {
         NumberAnimation {
             duration: MotionPreferences.duration(Theme.motionStateDuration)

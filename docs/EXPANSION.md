@@ -250,6 +250,7 @@ content:
 | Popup adapter | `DisclosurePopup` | `PopupWindow` anchoring, focus, mapping, click-away, Escape, and lifecycle integration. |
 | Panel adapter | `DisclosurePanel` | Layer-shell anchors, input mask, focus grab, click-through behavior, and lifecycle integration. |
 | Base presentation | `DisclosureSurface` | Directional reveal, surface treatment, connector, padding, and content host. |
+| Canopy presentation | `CanopyDisclosure`, `Frame`, and `BarMaterial` | Publishes one active popup's global geometry and reveal progress so the fullscreen frame can draw a continuous, non-interactive glass body and neck behind it. |
 | Origin presentation | `InteractiveIsland` or equivalent | Activation, visible open state, keyboard semantics, and accessible origin identity. |
 | Consumer | Feature widget and content | Feature data, actions, content layout, availability, and the choice of adapter/presentation. |
 
@@ -287,9 +288,10 @@ exclusive coordinator unless it intentionally behaves like one.
 | `focusOnOpen` | Whether the adapter should focus its initial target once mapped. |
 | `clickAwayEnabled` | Whether loss of the adapter's focus grab requests a normal close. |
 | `reducedMotion` | Presentation preference; defaults to `MotionPreferences.reducedMotion`. |
+| `integratedCanopy` | Allows a bottom-attached popup to use frame-owned continuous glass when a canopy host is available. Defaults to `true`. |
 | `originEdge` | Edge from which placement and reveal direction are derived. |
 | `surfaceGap` | Distance between the origin anchor and expanded surface. |
-| `screenMargin` | Minimum fitting margin inside available output geometry. |
+| `screenMargin` | Minimum fitting margin inside available output geometry. Defaults to `Theme.screenEdgeGap`, matching Hyprland's outer gap; integrated canopy popups also reserve their backing margin so visible glass respects that edge gap. |
 | `initialFocusTarget` | Item focused after a keyboard, shortcut, or IPC open. |
 | `lifecycle` | Read-only `DisclosureLifecycle` used by origins and diagnostics. |
 | `geometry` | Read-only `DisclosureGeometry` supplied to the presentation. |
@@ -497,6 +499,29 @@ The implementation and visual treatment have been exercised with Hyprglass both
 enabled and disabled. See `EXPANSION_VALIDATION.md` for the session matrix,
 qualified pointer handoff, and revalidation guidance.
 
+### Integrated canopy presentation
+
+Bottom-attached `DisclosurePopup` consumers use the frame-owned canopy
+presentation when a host is available. The adapter publishes its fitted global
+surface geometry, origin geometry, and lifecycle reveal progress through
+`CanopyDisclosure`. The frame composition draws a rounded backing slightly beyond
+the popup bounds while `BarMaterial` widens the originating regional lobe into
+that backing inside the existing fullscreen frame surface. The popup remains a
+separate native surface above it and continues to own its denser functional
+material, content, focus, input, dismissal, and lifecycle state.
+
+This arrangement gives the bar literal material continuity around the expanded
+panel without asking two native windows to imitate one blur sample at the same
+visible edge. Participating consumers suppress their small connector when
+`canopyPresentationActive`; if no host is available, the popup retains its normal
+standalone material and connector fallback. The frame extension is visual only
+and must never be added to the frame input mask.
+
+Only one integrated canopy presenter is active at a time, following ordinary
+disclosure scope replacement. Closing and rapid reversal consume the same
+lifecycle progress as popup content, and reduced motion settles both to the same
+endpoint.
+
 ## Adoption status and follow-ups
 
 The infrastructure issue proves both supported native-window classes. Further
@@ -506,8 +531,8 @@ widget work should consume this API rather than expand the primitive's scope:
 | --- | --- | --- |
 | Media | Migrated to `DisclosurePopup`. | #13 may redesign player selection and content without recreating lifecycle behavior. |
 | Notification history | Migrated to `DisclosurePanel`. | #14 may redesign indicator, toast, and history behavior; toasts remain intentionally transient and separate. |
-| Audio | Still owns a raw `PopupWindow`, visibility toggle, focus grab, Escape handler, and focus callback. | #15 should migrate these mechanics to `DisclosurePopup` while reworking content hierarchy. |
-| Clock/calendar | No expanded surface or legacy popup exists. | #8 can use `InteractiveIsland` plus `DisclosurePopup` directly as the first clean new consumer. |
+| Audio | Migrated to `DisclosurePopup` and the integrated canopy presentation. | #15 may rework content hierarchy and device/application controls without recreating lifecycle behavior. |
+| Clock/calendar | Uses `DisclosurePopup` and the integrated canopy presentation. | The calendar keeps locale-aware month/date behavior, focusable navigation, and local forecast content inside the consumer while reusing the shared lifecycle and geometry. |
 | Power/session controls | The unmounted placeholder owns a raw `PanelWindow` and direct visibility toggle. | #6 should choose its final origin within #5 and use a shared adapter; destructive confirmation remains feature policy. |
 | Launcher/search | Not implemented. | #4 should choose `DisclosurePopup` or `DisclosurePanel` from its geometry and input requirements, while preserving the shared lifecycle. |
 | Unified system surface | Not implemented; it will absorb several future capabilities. | #5 owns the surface and scope decision, with tray (#7), privacy (#10), audio (#15), and power (#6) integrating rather than creating competing permanent disclosures. |
@@ -520,8 +545,8 @@ non-exclusive surfaces with a different lifetime and no disclosure focus claim.
 The follow-up issues should remove legacy mechanics when they migrate; keeping a
 raw popup or panel alongside a shared adapter would create two authorities for
 open state. Content redesign, new services, confirmation policy, search models,
-and calendar behavior remain in their widget issues and are not requirements for
-the shared primitive.
+and feature-specific calendar behavior remain in their widget issues and are not
+requirements for the shared primitive.
 
 ## Invariants
 

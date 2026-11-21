@@ -1,5 +1,7 @@
 pragma ComponentBehavior: Bound
 
+import qs.config
+
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
@@ -14,6 +16,9 @@ PanelWindow {
     required property int topBarHeight
 
     property bool keyboardNavigationActive: false
+
+    Component.onCompleted: CanopyDisclosure.hostAvailable = true
+    Component.onDestruction: CanopyDisclosure.hostAvailable = false
 
     function enterKeyboardNavigation() {
         keyboardNavigationActive = true;
@@ -69,6 +74,19 @@ PanelWindow {
             radius: 16
         }
         Region { item: topBar.rightInputRegion }
+    }
+
+    BarMaterial {
+        leftTarget: topBar.leftInputRegion
+        centreTarget: topBar.centreInputRegion
+        rightTarget: topBar.rightInputRegion
+        fillColor: frame.fillColor
+        barHeight: frame.topBarHeight
+        bottomRadius: Theme.barSegmentRadius
+        disclosureRect: topBar.canopyRect()
+        disclosureOriginRect: topBar.canopyOriginRect()
+        disclosureProgress: CanopyDisclosure.presenter?.canopyProgress ?? 0
+        disclosureRadius: Theme.popupRadius
     }
 
     TopBar {

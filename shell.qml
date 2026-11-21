@@ -11,7 +11,7 @@ ShellRoot {
     Frame {
         fillColor: Theme.glassFrameSurface
         cornerRadius: 18
-        topBarHeight: 52
+        topBarHeight: Theme.topBarHeight
     }
 
     PanelWindow {
@@ -24,7 +24,7 @@ ShellRoot {
         // Reserve room for the bar without adding a second visible glass
         // surface or making the monitor-sized frame exclusive.
         implicitHeight: 1
-        exclusiveZone: 52
+        exclusiveZone: Theme.topBarHeight
         color: "transparent"
 
         mask: Region {

@@ -17,15 +17,26 @@ PopupWindow {
     property bool focusOnOpen: true
     property bool clickAwayEnabled: true
     property bool reducedMotion: MotionPreferences.reducedMotion
+    property bool integratedCanopy: true
     property int originEdge: DisclosureGeometry.Bottom
     property real surfaceGap: 4
-    property real screenMargin: 8
+    // Integrated glass extends beyond the logical popup surface, so reserve
+    // that backing as well as the visible output-edge gap during fitting.
+    property real screenMargin: Theme.screenEdgeGap
+        + (canopyPresentationActive ? Theme.canopyBackingMargin : 0)
 
     readonly property alias lifecycle: disclosureLifecycle
     readonly property alias geometry: disclosureGeometry
     readonly property real revealProgress: disclosureLifecycle.transitionProgress
     readonly property bool effectiveOpen: disclosureLifecycle.effectiveOpen
     readonly property bool interactionEnabled: disclosureLifecycle.interactive
+    readonly property bool canopyPresentationActive: integratedCanopy
+        && CanopyDisclosure.hostAvailable
+        && originEdge === DisclosureGeometry.Bottom
+    readonly property rect canopySurfaceRect: disclosureGeometry.surfaceRect
+    readonly property rect canopyOriginRect: disclosureGeometry.originGlobalRect
+    readonly property real canopyProgress: revealProgress
+    readonly property int canopyOriginEdge: originEdge
 
     property Item initialFocusTarget: contentContainer
 
@@ -58,6 +69,21 @@ PopupWindow {
         return Qt.MouseFocusReason;
     }
 
+    function fittedAnchorRect(): rect {
+        if (!root.geometry.valid || !root.origin)
+            return Qt.rect(0, 0, root.origin?.width ?? 1, root.origin?.height ?? 1);
+
+        const originRect = root.geometry.originGlobalRect;
+        const surface = root.geometry.surfaceRect;
+        if (root.originEdge === DisclosureGeometry.Top || root.originEdge === DisclosureGeometry.Bottom) {
+            const localCenter = surface.x + surface.width / 2 - originRect.x;
+            return Qt.rect(localCenter - 0.5, 0, 1, root.origin.height);
+        }
+
+        const localCenter = surface.y + surface.height / 2 - originRect.y;
+        return Qt.rect(0, localCenter - 0.5, root.origin.width, 1);
+    }
+
     visible: adapterState.mapped
     color: "transparent"
 
@@ -67,15 +93,19 @@ PopupWindow {
 
     anchor {
         item: root.origin
+        rect: root.fittedAnchorRect()
         edges: root.anchorEdgesFor(root.originEdge)
         gravity: root.anchorEdgesFor(root.originEdge)
         adjustment: PopupAdjustment.SlideX | PopupAdjustment.SlideY
 
         margins {
-            top: root.originEdge === DisclosureGeometry.Bottom ? root.surfaceGap : 0
-            right: root.originEdge === DisclosureGeometry.Left ? root.surfaceGap : 0
-            bottom: root.originEdge === DisclosureGeometry.Top ? root.surfaceGap : 0
-            left: root.originEdge === DisclosureGeometry.Right ? root.surfaceGap : 0
+            // PopupAnchor margins are removed from the anchor rectangle. Expand
+            // the attachment edge outwards so surfaceGap offsets the popup in
+            // its reveal direction instead of shrinking the opposite edge.
+            top: root.originEdge === DisclosureGeometry.Top ? -Math.round(root.surfaceGap) : 0
+            right: root.originEdge === DisclosureGeometry.Right ? -Math.round(root.surfaceGap) : 0
+            bottom: root.originEdge === DisclosureGeometry.Bottom ? -Math.round(root.surfaceGap) : 0
+            left: root.originEdge === DisclosureGeometry.Left ? -Math.round(root.surfaceGap) : 0
         }
     }
 
@@ -180,4 +210,13 @@ PopupWindow {
             disclosureLifecycle.requestClose(DisclosureLifecycle.FocusLoss, DisclosureLifecycle.ProgrammaticInput);
         }
     }
+
+    onEffectiveOpenChanged: {
+        if (effectiveOpen)
+            CanopyDisclosure.claim(root);
+        else
+            CanopyDisclosure.release(root);
+    }
+
+    Component.onDestruction: CanopyDisclosure.release(root)
 }

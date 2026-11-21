@@ -1,3 +1,5 @@
+import qs.config
+
 import QtQuick
 import Quickshell
 
@@ -21,7 +23,7 @@ QtObject {
     property real requestedSurfaceHeight: targetItem?.height ?? 0
     property int originEdge: DisclosureGeometry.Bottom
     property real surfaceGap: 4
-    property real screenMargin: 8
+    property real screenMargin: Theme.screenEdgeGap
     property real connectorWidth: 28
     property real connectorThickness: 4
     property real connectorEdgeMargin: 16

@@ -21,7 +21,7 @@ PanelWindow {
     property string layerNamespace: "quickshell:disclosure"
     property int originEdge: DisclosureGeometry.Right
     property real surfaceGap: 0
-    property real screenMargin: 8
+    property real screenMargin: Theme.screenEdgeGap
 
     // Fullscreen layer surfaces should point this at their actual interactive
     // disclosure. Everything outside this item remains click-through.
