@@ -79,7 +79,7 @@ DisclosurePopup {
 
                     AudioMuteButton {
                         muted: popup.sink?.audio?.muted ?? true
-                        onToggled: {
+                        onMuteRequested: {
                             if (popup.sink?.audio)
                                 popup.sink.audio.muted = !popup.sink.audio.muted;
                         }
@@ -166,9 +166,9 @@ DisclosurePopup {
 
                     AudioMuteButton {
                         muted: popup.source?.audio?.muted ?? true
-                        activeIcon: ""
-                        mutedIcon: ""
-                        onToggled: {
+                        activeIconName: "audio.microphone"
+                        mutedIconName: "audio.microphoneMuted"
+                        onMuteRequested: {
                             if (popup.source?.audio)
                                 popup.source.audio.muted = !popup.source.audio.muted;
                         }

@@ -1,36 +1,21 @@
 import qs.config
+import qs.components
 
 import QtQuick
 
-Rectangle {
+IslandAction {
     id: root
 
     required property bool muted
 
-    property string activeIcon: ""
-    property string mutedIcon: "󰖁"
+    property string activeIconName: "audio.volumeHigh"
+    property string mutedIconName: "audio.muted"
 
-    signal toggled
+    signal muteRequested
 
-    implicitWidth: 28
-    implicitHeight: 28
-    radius: Theme.islandRadius
-
-    color: mouseArea.containsMouse ? Theme.islandSurfaceHover : "transparent"
-
-    Text {
-        font.family: Theme.iconFontFamily
-        anchors.centerIn: parent
-        text: root.muted ? root.mutedIcon : root.activeIcon
-        color: root.muted ? Theme.accentAmber : Theme.textPrimary
-    }
-
-    MouseArea {
-        id: mouseArea
-
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: root.toggled()
-    }
+    text: muted ? "Unmute" : "Mute"
+    tooltipText: text
+    iconName: muted ? mutedIconName : activeIconName
+    iconColor: muted ? Theme.accentAmber : Theme.textPrimary
+    onClicked: root.muteRequested()
 }

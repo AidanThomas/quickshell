@@ -1,4 +1,5 @@
 import qs.config
+import qs.components
 
 import QtQuick
 import QtQuick.Controls
@@ -74,8 +75,7 @@ Item {
         }
     }
 
-    Text {
-        font.family: Theme.iconFontFamily
+    IslandAction {
         id: volumeIcon
 
         anchors {
@@ -83,33 +83,34 @@ Item {
             horizontalCenter: parent.horizontalCenter
         }
 
-        text: {
+        width: 24
+        height: 24
+        text: (root.player?.volume ?? 0) === 0 ? "Unmute media" : "Mute media"
+        tooltipText: text
+        iconSize: 16
+        iconName: {
             const volume = root.player?.volume ?? 0;
 
             if (volume === 0)
-                return "󰖁";
+                return "audio.muted";
 
             if (volume < 0.5)
-                return "󰕿";
+                return "audio.volumeLow";
 
-            return "󰕾";
+            return "audio.volumeHigh";
         }
 
-        color: (root.player?.volume ?? 0) === 0 ? Theme.accentAmber : Theme.textMuted
+        iconColor: (root.player?.volume ?? 0) === 0 ? Theme.accentAmber : Theme.textMuted
+        unavailable: !(root.player?.canControl ?? false) || !(root.player?.volumeSupported ?? false)
+        onClicked: {
+            if (!root.player)
+                return;
 
-        MouseArea {
-            anchors.fill: parent
-            cursorShape: Qt.PointingHandCursor
-            onClicked: {
-                if (!root.player)
-                    return;
-
-                if (root.player.volume > 0) {
-                    root.volumeBeforeMute = root.player.volume;
-                    root.player.volume = 0;
-                } else {
-                    root.player.volume = root.volumeBeforeMute;
-                }
+            if (root.player.volume > 0) {
+                root.volumeBeforeMute = root.player.volume;
+                root.player.volume = 0;
+            } else {
+                root.player.volume = root.volumeBeforeMute;
             }
         }
     }

@@ -5,7 +5,6 @@ import Quickshell
 
 Singleton {
     readonly property string fontFamily: "RobotoMono Nerd Font Propo"
-    readonly property string iconFontFamily: "RobotoMono Nerd Font"
 
     // Base surfaces
     readonly property color glassBarSurface: "#48111620"
@@ -27,6 +26,7 @@ Singleton {
     // Typography
     readonly property color textPrimary: "#F5F7FF"
     readonly property color textMuted: "#AAB2C5"
+    readonly property real iconUnavailableOpacity: 0.45
 
     // Semantic accents
     readonly property color accentCyan: "#2DEBFF"

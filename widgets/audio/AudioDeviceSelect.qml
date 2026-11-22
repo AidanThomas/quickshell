@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import qs.config
+import qs.components
 
 import QtQuick
 import QtQuick.Controls
@@ -43,9 +44,9 @@ ComboBox {
         elide: Text.ElideRight
     }
 
-    indicator: Text {
-        font.family: Theme.fontFamily
-        text: "▾"
+    indicator: ShellIcon {
+        name: "device.select"
+        iconSize: 16
         color: Theme.textMuted
 
         anchors {

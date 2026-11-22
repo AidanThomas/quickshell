@@ -167,13 +167,24 @@ Item {
             }
             spacing: Theme.islandGap
 
-            WidgetIsland {
+            InteractiveIsland {
                 id: notificationIsland
 
-                active: notificationWidget.popupOpen
+                disclosure: notificationWidget.disclosure
                 attention: notificationWidget.unreadCount > 0
                 critical: notificationWidget.hasUrgent
                 muted: notificationWidget.doNotDisturb
+                secondaryActionEnabled: true
+                accessibleName: "Notifications"
+                accessibleDescription: notificationWidget.statusDescription ?? ""
+                tooltipText: "Notifications — secondary click toggles do not disturb"
+
+                onPrimaryTriggered: inputSource => notificationWidget.activate(inputSource)
+                onSecondaryTriggered: notificationWidget.toggleDoNotDisturb()
+                onEscapeRequested: notificationWidget.disclosure.requestClose(
+                    DisclosureLifecycle.Escape,
+                    DisclosureLifecycle.Keyboard
+                )
 
                 NotificationWidget {
                     id: notificationWidget

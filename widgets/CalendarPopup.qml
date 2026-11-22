@@ -136,56 +136,28 @@ DisclosurePopup {
                     }
                     spacing: 2
 
-                    Controls.Button {
+                    IslandAction {
                         id: todayButton
                         width: 30
                         height: 28
-                        focusPolicy: Qt.StrongFocus
-                        hoverEnabled: true
-                        Accessible.name: "Today"
-                        Accessible.description: "Return to the current date"
+                        text: "Today"
+                        tooltipText: "Return to the current date"
+                        iconName: "calendar.today"
+                        iconSize: 16
                         onClicked: root.showToday()
-
-                        background: Rectangle {
-                            radius: 9
-                            color: todayButton.down || todayButton.visualFocus
-                                ? Theme.islandSurfaceActive
-                                : (todayButton.hovered ? Theme.islandSurfaceHover : Theme.islandSurface)
-                            border.width: 1
-                            border.color: todayButton.visualFocus || todayButton.hovered
-                                ? Theme.borderHover
-                                : Theme.borderDefault
-                        }
-
-                        contentItem: Text {
-                            text: ""
-                            color: Theme.textPrimary
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            font.family: Theme.iconFontFamily
-                            font.pixelSize: 12
-                        }
-
-                        Controls.ToolTip.visible: todayButton.hovered
-                        Controls.ToolTip.text: "Today"
-                        Controls.ToolTip.delay: 650
-
-                        HoverHandler {
-                            cursorShape: Qt.PointingHandCursor
-                        }
                     }
 
                     IslandAction {
                         id: previousMonthButton
                         text: "Previous month"
-                        iconText: "‹"
+                        iconName: "navigation.previous"
                         tooltipText: "Previous month"
                         onClicked: root.showMonth(-1)
                     }
 
                     IslandAction {
                         text: "Next month"
-                        iconText: "›"
+                        iconName: "navigation.next"
                         tooltipText: "Next month"
                         onClicked: root.showMonth(1)
                     }
@@ -314,19 +286,18 @@ DisclosurePopup {
                             }
 
                             contentItem: Item {
-                                Text {
+                                ShellIcon {
                                     anchors {
                                         top: parent.top
                                         left: parent.left
-                                        topMargin: 3
-                                        leftMargin: 4
+                                        topMargin: 2
+                                        leftMargin: 3
                                     }
-                                    text: "✓"
+                                    name: "action.check"
+                                    iconSize: 8
                                     visible: dayButton.isPast
                                     color: Theme.textMuted
                                     opacity: 0.38
-                                    font.family: Theme.fontFamily
-                                    font.pixelSize: 7
                                 }
 
                                 Text {

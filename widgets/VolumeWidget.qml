@@ -78,7 +78,8 @@ Item {
             text: root.inputMuted ? "Unmute microphone" : "Mute microphone"
             tooltipText: root.inputAvailable ? text : "Microphone unavailable"
             unavailable: !root.inputAvailable
-            iconText: root.inputMuted ? "" : ""
+            iconName: root.inputMuted ? "audio.microphoneMuted" : "audio.microphone"
+            iconSize: 18
             iconColor: root.inputMuted ? Theme.accentAmber : Theme.textMuted
 
             onClicked: root.toggleInputMute()
@@ -98,15 +99,15 @@ Item {
                 id: speakerContent
                 spacing: 6
 
-                Text {
-                    font.family: Theme.iconFontFamily
+                ShellIcon {
                     id: speakerIcon
-                    text: {
+                    iconSize: 18
+                    name: {
                         if (!root.sink)
-                            return "";
+                            return "audio.volumeHigh";
                         if (root.sink.audio?.muted)
-                            return "󰖁";
-                        return "";
+                            return "audio.muted";
+                        return "audio.volumeHigh";
                     }
                     color: root.outputMuted ? Theme.accentAmber : Theme.accentCyan
 

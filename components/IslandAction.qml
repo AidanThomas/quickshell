@@ -6,8 +6,10 @@ import QtQuick.Controls
 AbstractButton {
     id: root
 
-    property string iconText: ""
+    property string iconName: ""
     property color iconColor: Theme.textPrimary
+    property real iconSize: 16
+    property point iconOpticalOffset: Qt.point(0, 0)
     property string tooltipText: ""
     property bool unavailable: false
 
@@ -15,7 +17,8 @@ AbstractButton {
     implicitHeight: 28
     focusPolicy: Qt.StrongFocus
     hoverEnabled: true
-    opacity: unavailable ? 0.45 : 1
+    enabled: !unavailable
+    opacity: unavailable ? Theme.iconUnavailableOpacity : 1
 
     Accessible.name: text
     Accessible.description: tooltipText
@@ -36,12 +39,12 @@ AbstractButton {
         }
     }
 
-    contentItem: Text {
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        text: root.iconText
+    contentItem: ShellIcon {
+        name: root.iconName
         color: root.iconColor
-        font.family: Theme.iconFontFamily
+        iconSize: root.iconSize
+        opticalOffset: root.iconOpticalOffset
+        unavailable: false
     }
 
     ToolTip.visible: root.hovered && root.tooltipText.length > 0
@@ -58,4 +61,5 @@ AbstractButton {
             easing.type: Theme.motionStateEasing
         }
     }
+
 }

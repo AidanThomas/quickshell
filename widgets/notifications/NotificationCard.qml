@@ -1,4 +1,5 @@
 import qs.config
+import qs.components
 
 import QtQuick
 import Quickshell
@@ -80,33 +81,17 @@ Rectangle {
             width: parent.width - appIcon.width - parent.spacing * 2
         }
 
-        Item {
+        IslandAction {
             id: dismissButton
             width: 24
             height: 24
             z: 1
-
-            Text {
-                font.family: Theme.iconFontFamily
-                anchors.centerIn: parent
-                text: "󰅖"
-                color: dismissMouse.containsMouse ? Theme.accentRed : Theme.textMuted
-
-                Behavior on color {
-                    ColorAnimation {
-                        duration: MotionPreferences.duration(Theme.motionFeedbackDuration)
-                        easing.type: Theme.motionFeedbackEasing
-                    }
-                }
-            }
-
-            MouseArea {
-                id: dismissMouse
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.dismissed()
-            }
+            text: "Dismiss notification"
+            tooltipText: text
+            iconName: "action.dismiss"
+            iconSize: 16
+            iconColor: hovered ? Theme.accentRed : Theme.textMuted
+            onClicked: root.dismissed()
         }
     }
 }

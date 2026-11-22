@@ -25,6 +25,9 @@ Item {
     // NotificationUrgency.Critical is enum value 2 in the installed API, but
     // its singleton is not exposed to expressions by this Quickshell build.
     readonly property bool hasUrgent: notificationServer.trackedNotifications.values.some(notification => notification.urgency === 2)
+    readonly property string statusDescription: root.doNotDisturb
+        ? `${root.unreadCount} unread, do not disturb enabled`
+        : `${root.unreadCount} unread notification${root.unreadCount === 1 ? "" : "s"}`
 
     function requestPopupOpen(inputSource = DisclosureLifecycle.ProgrammaticInput): bool {
         return notificationCenter.requestOpen(inputSource);
@@ -32,6 +35,22 @@ Item {
 
     function togglePopup(inputSource = DisclosureLifecycle.ProgrammaticInput): bool {
         return notificationCenter.toggle(inputSource);
+    }
+
+    function toggleDoNotDisturb() {
+        root.doNotDisturb = !root.doNotDisturb;
+
+        if (root.doNotDisturb)
+            root.hideAllToasts();
+    }
+
+    function activate(inputSource = DisclosureLifecycle.ProgrammaticInput) {
+        const opening = !notificationCenter.lifecycle.requestedOpen;
+        const changed = root.togglePopup(inputSource);
+        if (opening && changed) {
+            root.unreadCount = 0;
+            root.hideAllToasts();
+        }
     }
 
     function hideAllToasts() {
@@ -101,9 +120,9 @@ Item {
         anchors.centerIn: parent
         spacing: 4
 
-        Text {
-            font.family: Theme.iconFontFamily
-            text: root.doNotDisturb ? "󰂛" : "󰂚"
+        ShellIcon {
+            name: root.doNotDisturb ? "notifications.muted" : "notifications.default"
+            iconSize: 18
             color: root.hasUrgent
                 ? Theme.accentRed
                 : (root.unreadCount > 0 ? Theme.accentAmber : (root.doNotDisturb ? Theme.textMuted : Theme.textPrimary))
@@ -123,29 +142,6 @@ Item {
             color: root.hasUrgent ? Theme.accentRed : Theme.accentAmber
             font.pixelSize: root.unreadCount > 99 ? 9 : 11
             font.weight: Font.DemiBold
-        }
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        cursorShape: Qt.PointingHandCursor
-        onClicked: mouse => {
-            if (mouse.button == Qt.RightButton) {
-                root.doNotDisturb = !root.doNotDisturb;
-
-                if (root.doNotDisturb)
-                    root.hideAllToasts();
-
-                return;
-            }
-
-            const opening = !notificationCenter.lifecycle.requestedOpen;
-            const changed = root.togglePopup(DisclosureLifecycle.Pointer);
-            if (opening && changed) {
-                root.unreadCount = 0;
-                root.hideAllToasts();
-            }
         }
     }
 

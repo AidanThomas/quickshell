@@ -1,36 +1,20 @@
 import qs.config
+import qs.components
 import qs.widgets.power
 
 import QtQuick
 
-Item {
+IslandAction {
     id: root
 
-    implicitWidth: Math.max(24, icon.implicitWidth)
-    implicitHeight: Math.max(24, icon.implicitHeight)
     readonly property bool menuOpen: powerMenu.visible
 
-    Text {
-        font.family: Theme.iconFontFamily
-        id: icon
-        anchors.centerIn: parent
-        text: ""
-        color: root.menuOpen ? Theme.accentRed : Theme.textPrimary
-        font.pixelSize: 18
-
-        Behavior on color {
-            ColorAnimation {
-                duration: MotionPreferences.duration(Theme.motionStateDuration)
-                easing.type: Theme.motionStateEasing
-            }
-        }
-    }
-
-    MouseArea {
-        anchors.fill: parent
-        cursorShape: Qt.PointingHandCursor
-        onClicked: powerMenu.toggle()
-    }
+    text: "Power and session controls"
+    tooltipText: text
+    iconName: "session.power"
+    iconSize: 18
+    iconColor: root.menuOpen ? Theme.accentRed : Theme.textPrimary
+    onClicked: powerMenu.toggle()
 
     PowerMenu {
         id: powerMenu
