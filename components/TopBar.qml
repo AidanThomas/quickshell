@@ -16,6 +16,8 @@ Item {
 
     signal keyboardNavigationExitRequested
 
+    readonly property int layoutMode: LayoutPolicy.modeForWidth(width)
+
     function focusFirstInteractive() {
         if (playerIsland.visible) {
             playerIsland.forceActiveFocus(Qt.TabFocusReason);
@@ -85,6 +87,7 @@ Item {
             // Ambient information belongs to the regional material without
             // pretending to be another interactive capsule.
             Item {
+                visible: topBar.layoutMode === LayoutPolicy.Full
                 implicitWidth: visualizer.implicitWidth + 12
                 implicitHeight: Theme.islandHeight
 
@@ -100,6 +103,7 @@ Item {
         id: centreRegion
 
         readonly property bool occupied: playerWidget.hasPlayer
+            && topBar.layoutMode !== LayoutPolicy.Minimum
         anchors {
             top: parent.top
             bottom: parent.bottom
@@ -169,6 +173,11 @@ Item {
 
             InteractiveIsland {
                 id: notificationIsland
+
+                visible: topBar.layoutMode !== LayoutPolicy.Minimum
+                    || notificationWidget.unreadCount > 0
+                    || notificationWidget.hasUrgent
+                    || notificationWidget.doNotDisturb
 
                 disclosure: notificationWidget.disclosure
                 attention: notificationWidget.unreadCount > 0

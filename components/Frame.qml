@@ -11,11 +11,14 @@ import Quickshell.Wayland
 PanelWindow {
     id: frame
 
+    required property ShellScreen output
     required property color fillColor
     required property int cornerRadius
     required property int topBarHeight
 
     property bool keyboardNavigationActive: false
+
+    screen: output
 
     Component.onCompleted: CanopyDisclosure.hostAvailable = true
     Component.onDestruction: CanopyDisclosure.hostAvailable = false
