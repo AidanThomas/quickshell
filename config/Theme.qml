@@ -12,6 +12,7 @@ Singleton {
     readonly property color islandSurface: "#B8151924"
     readonly property color islandSurfaceHover: "#D21E2433"
     readonly property color islandSurfaceActive: "#D920293A"
+    readonly property color secondarySurface: "#D12B2852"
     readonly property color popupSurface: "#D9111621"
     readonly property color popupSurfaceRaised: "#E71C2230"
     readonly property color glassEdgeHighlight: "#30FFFFFF"

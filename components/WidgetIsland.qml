@@ -20,6 +20,8 @@ Item {
     property bool loading: false
     property bool unavailable: false
     property bool fullWidthAccent: false
+    property real leadingSectionWidth: 0
+    property color leadingSectionColor: "transparent"
 
     property bool accentVisible: active || attention || critical || keyboardFocused
     property color accentColor: critical
@@ -55,10 +57,77 @@ Item {
         }
     }
 
+    Item {
+        visible: root.leadingSectionWidth > 0
+        anchors {
+            fill: parent
+            margins: Theme.islandBorderWidth
+        }
+
+        readonly property real interiorLeadingWidth: Math.max(
+            0,
+            Math.min(width, root.leadingSectionWidth - Theme.islandBorderWidth)
+        )
+        readonly property real interiorRadius: Math.max(0, Theme.islandRadius - Theme.islandBorderWidth)
+
+        Rectangle {
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                left: parent.left
+            }
+            width: parent.interiorLeadingWidth
+            radius: parent.interiorRadius
+            color: root.leadingSectionColor
+
+            Rectangle {
+                anchors {
+                    top: parent.top
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                width: Math.min(parent.width, parent.parent.interiorRadius)
+                color: parent.color
+            }
+        }
+
+        Rectangle {
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                right: parent.right
+            }
+            width: Math.max(0, parent.width - parent.interiorLeadingWidth)
+            radius: parent.interiorRadius
+            color: root.surfaceColor
+
+            Rectangle {
+                anchors {
+                    top: parent.top
+                    left: parent.left
+                    bottom: parent.bottom
+                }
+                width: Math.min(parent.width, parent.parent.interiorRadius)
+                color: parent.color
+            }
+        }
+
+        Rectangle {
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+            }
+            x: parent.interiorLeadingWidth - width
+            width: 1
+            color: root.surfaceColor
+            opacity: 0.72
+        }
+    }
+
     TechnicalSurface {
         anchors.fill: parent
         cutSize: Theme.surfaceCutSize
-        fillColor: root.surfaceColor
+        fillColor: root.leadingSectionWidth > 0 ? "transparent" : root.surfaceColor
         outlineWidth: Theme.islandBorderWidth
         outlineColor: root.outlineColor
         radius: Theme.islandRadius

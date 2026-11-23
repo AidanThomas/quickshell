@@ -19,12 +19,7 @@ Item {
     readonly property int layoutMode: LayoutPolicy.modeForWidth(width)
 
     function focusFirstInteractive() {
-        if (playerIsland.visible) {
-            playerIsland.forceActiveFocus(Qt.TabFocusReason);
-            return;
-        }
-
-        volumeIsland.forceActiveFocus(Qt.TabFocusReason);
+        workspacesWidget.forceActiveFocus(Qt.TabFocusReason);
     }
 
     function clearKeyboardFocus() {
@@ -81,6 +76,12 @@ Item {
             spacing: Theme.islandGap
 
             WidgetIsland {
+                id: workspaceIsland
+
+                keyboardFocused: workspacesWidget.activeFocus
+                leadingSectionWidth: horizontalPadding + workspacesWidget.attachmentWidth
+                leadingSectionColor: Theme.secondarySurface
+
                 WorkspacesWidget { id: workspacesWidget }
             }
 
